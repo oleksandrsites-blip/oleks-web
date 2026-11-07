@@ -48,37 +48,41 @@ async function type(el, text, ms){ for(const ch of text){ if(skipped) return; el
 async function runIntro(){
   buildH1(false);
   segs[0].textContent = segs[0].dataset.t; segs[0].classList.add('ghost');
-  await sleep(500);
-  await type(iText, 'ідея', 95);
-  await sleep(320); if(skipped) return;
+  await sleep(350);
+  await type(iText, 'ідея', 75);
+  await sleep(220); if(skipped) return;
 
   const target = parseFloat(getComputedStyle(h1).fontSize);
   iInner.style.transition = 'none';
   iInner.classList.replace('mono','big');
   iInner.style.fontSize = target + 'px';
   iInner.style.transform = `scale(${20/target})`;
+  iInner.style.filter = 'blur(6px)';
   iInner.getBoundingClientRect();
-  iInner.style.transition = 'transform .95s var(--ease)';
+  iInner.style.transition = 'transform .85s var(--ease), filter .85s var(--ease)';
   iInner.style.transform = 'scale(1)';
-  ann.querySelectorAll('span').forEach((s,i) => setTimeout(() => s.classList.add('on'), 140 + i*120));
-  await sleep(1050); if(skipped) return;
+  iInner.style.filter = 'blur(0)';
+  setTimeout(() => iInner.classList.add('sel-on'), 420);
+  ann.querySelectorAll('span').forEach((s,i) => setTimeout(() => s.classList.add('on'), 380 + i*90));
+  await sleep(880); if(skipped) return;
 
-  iText.textContent = 'іде'; await sleep(150);
-  iText.textContent = 'ідеї'; await sleep(220);
+  iText.textContent = 'іде'; await sleep(120);
+  iText.textContent = 'ідеї'; await sleep(170);
   iPre.classList.add('in'); ann.classList.add('out');
-  await sleep(620); if(skipped) return;
+  await sleep(520); if(skipped) return;
+  iInner.classList.remove('sel-on');
 
   const from = iPre.getBoundingClientRect(), to = segs[0].getBoundingClientRect();
-  iInner.style.transition = 'transform .85s var(--ease)';
+  iInner.style.transition = 'transform .75s var(--ease)';
   iInner.style.transform = `translate(${to.left-from.left}px,${to.top-from.top}px)`;
-  await sleep(870); if(skipped) return;
+  await sleep(760); if(skipped) return;
 
   intro.classList.add('gone');
   segs[0].classList.remove('ghost'); segs[0].after(cur);
   for(let i = 1; i < segs.length; i++){
-    if(segs[i].parentNode !== segs[i-1].parentNode) await sleep(110);
+    if(segs[i].parentNode !== segs[i-1].parentNode) await sleep(80);
     segs[i].after(cur);
-    await type(segs[i], segs[i].dataset.t, 38);
+    await type(segs[i], segs[i].dataset.t, 30);
     if(skipped) return;
   }
   done = true;
@@ -90,8 +94,8 @@ async function runIntro(){
 ['wheel','touchmove','keydown','pointerdown'].forEach(e => addEventListener(e, () => { if(!done) finish(); }, {passive:true}));
 
 /* ================= НИТКА ================= */
-const svg = $('thread'), path = $('path');
-let len = 0, endScroll = 1;
+const svg = $('thread'), path = $('path'), path2 = $('path2');
+let len = 0, endScroll = 1, len2 = 0, s2a = 0, s2b = 1;
 const abs = el => { const r = el.getBoundingClientRect(); return {l:r.left+scrollX, t:r.top+scrollY, r:r.right+scrollX, b:r.bottom+scrollY, w:r.width, h:r.height}; };
 
 function layoutThread(){
@@ -132,6 +136,15 @@ function layoutThread(){
   len = path.getTotalLength();
   path.style.strokeDasharray = len;
   endScroll = Math.max(1, u2 - innerHeight*.62);
+
+  // фінал: нитка повертається з лівого краю і «втікає» в курсор після «наступний»
+  const fs = abs($('final')), fc = abs($('fCur'));
+  const cy = fc.t + fc.h/2;
+  path2.setAttribute('d', `M${g},${fs.t} L${g},${cy-90} C${g},${cy} ${g+20},${cy} ${g+60},${cy} L${fc.l},${cy}`);
+  len2 = path2.getTotalLength();
+  path2.style.strokeDasharray = len2;
+  s2a = fs.t - innerHeight*.9;
+  s2b = Math.max(s2a + 1, cy - innerHeight*.6);
 }
 
 function onScroll(){
@@ -140,6 +153,8 @@ function onScroll(){
   if(!done) return;
   const k = reduce ? 1 : Math.min(1, Math.max(0, y / endScroll));
   path.style.strokeDashoffset = len * (1 - k);
+  const k2 = reduce ? 1 : Math.min(1, Math.max(0, (y - s2a) / (s2b - s2a)));
+  path2.style.strokeDashoffset = len2 * (1 - k2);
   cur.classList.toggle('still', y > 4);
 }
 addEventListener('scroll', onScroll, {passive:true});
@@ -154,9 +169,10 @@ new ResizeObserver(() => { layoutThread(); onScroll(); }).observe(document.body)
 
 /* ================= Sticky CTA (мобілка) ================= */
 const sticky = $('sticky');
-new IntersectionObserver(([e]) => {
-  sticky.classList.toggle('on', !e.isIntersecting && e.boundingClientRect.top < 0);
-}).observe($('heroCta'));
+let pastHero = false, inFinal = false;
+const updSticky = () => sticky.classList.toggle('on', pastHero && !inFinal);
+new IntersectionObserver(([e]) => { pastHero = !e.isIntersecting && e.boundingClientRect.top < 0; updSticky(); }).observe($('heroCta'));
+new IntersectionObserver(([e]) => { inFinal = e.isIntersecting; updSticky(); }, {rootMargin:'0px 0px -30% 0px'}).observe($('final'));
 
 /* ================= Відгук-кружечок ================= */
 const vid = $('review'), nv = $('noteVid');
@@ -204,6 +220,67 @@ async function runChat(){
   }
 }
 new IntersectionObserver(([e], o) => { if(e.isIntersecting){ o.disconnect(); runChat(); } }, {threshold:.35}).observe($('chat'));
+
+/* ================= ЦІНИ: калькулятор ================= */
+const calc = document.querySelector('.calc'), cPrice = $('cPrice'), cTerm = $('cTerm'), botTog = $('botTog');
+const BASE = {landing:8000, multi:16000}, BOT = 4000, TERM = {landing:'1–2 тижні', multi:'2–4 тижні'};
+let cType = 'landing', cBot = false, shown = BASE.landing;
+const fmt = n => n.toLocaleString('uk-UA').replace(/\s/g, ' ');
+function countTo(to){
+  const from = shown, t0 = performance.now(), dur = reduce ? 0 : 450;
+  shown = to;
+  (function step(t){
+    const k = dur ? Math.min(1, (t - t0) / dur) : 1, e = 1 - Math.pow(1 - k, 3);
+    cPrice.textContent = fmt(Math.round((from + (to - from) * e) / 100) * 100);
+    if(k < 1) requestAnimationFrame(step);
+  })(t0);
+}
+function updCalc(){
+  countTo(BASE[cType] + (cBot ? BOT : 0));
+  cTerm.textContent = TERM[cType];
+  calc.classList.toggle('bot', cBot);
+}
+document.querySelectorAll('.opt').forEach(o => o.addEventListener('click', () => {
+  cType = o.dataset.type;
+  document.querySelectorAll('.opt').forEach(x => { const on = x === o; x.classList.toggle('on', on); x.setAttribute('aria-checked', on); });
+  updCalc();
+}));
+botTog.addEventListener('click', () => {
+  cBot = !cBot; botTog.classList.toggle('on', cBot); botTog.setAttribute('aria-pressed', cBot); updCalc();
+});
+
+/* ================= ПИТАННЯ ================= */
+document.querySelectorAll('.q-btn').forEach(b => b.addEventListener('click', () => {
+  const q = b.parentElement, open = !q.classList.contains('open');
+  document.querySelectorAll('.q.open').forEach(o => { o.classList.remove('open'); o.querySelector('.q-btn').setAttribute('aria-expanded','false'); });
+  if(open){ q.classList.add('open'); b.setAttribute('aria-expanded','true'); }
+}));
+
+/* ================= ФОРМА → Telegram (Cloudflare Pages Function /api/lead) ================= */
+const form = $('lead'), leadMsg = $('leadMsg'), leadBtn = $('leadBtn');
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  const name = form.name.value.trim(), phone = form.phone.value.trim();
+  const digits = phone.replace(/\D/g, '');
+  form.name.classList.toggle('err', name.length < 2);
+  form.phone.classList.toggle('err', digits.length < 10);
+  if(name.length < 2 || digits.length < 10){
+    leadMsg.className = 'lead-msg bad'; leadMsg.textContent = 'Перевірте ім\'я та номер телефону.'; return;
+  }
+  leadBtn.disabled = true; leadBtn.textContent = 'Надсилаю…'; leadMsg.textContent = '';
+  try{
+    const r = await fetch('/api/lead', {method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({name, phone, via: form.via.value, company: form.company.value})});
+    if(!r.ok) throw 0;
+    form.reset();
+    leadMsg.className = 'lead-msg ok'; leadMsg.textContent = 'Дякую! Напишу вам протягом дня.';
+  }catch(err){
+    leadMsg.className = 'lead-msg bad';
+    leadMsg.innerHTML = 'Не вдалося надіслати. Напишіть, будь ласка, у <a href="https://t.me/LysOleksandr" target="_blank" rel="noopener">Telegram</a>.';
+  }
+  leadBtn.disabled = false; leadBtn.textContent = 'Отримати прототип';
+});
+['name','phone'].forEach(n => form[n].addEventListener('input', () => form[n].classList.remove('err')));
 
 /* ================= старт ================= */
 if('scrollRestoration' in history) history.scrollRestoration = 'manual';
