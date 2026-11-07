@@ -42,7 +42,6 @@ function finish(){
   if(done) return;
   skipped = true; done = true;
   buildH1(true); showRest();
-  try{ sessionStorage.setItem('introSeen','1'); }catch(e){}
   layoutThread(); onScroll();
 }
 
@@ -115,7 +114,6 @@ async function runIntro(){
   done = true;
   // прибираємо службову розмітку, лишаємо чистий заголовок
   setTimeout(() => { if(!skipped){ buildH1(true); layoutThread(); onScroll(); } }, 700);
-  try{ sessionStorage.setItem('introSeen','1'); }catch(e){}
   layoutThread(); onScroll();
 }
 
@@ -331,5 +329,4 @@ form.phone.addEventListener('input', e => {
 /* ================= старт ================= */
 if('scrollRestoration' in history) history.scrollRestoration = 'manual';
 scrollTo(0,0);
-let seen = false; try{ seen = sessionStorage.getItem('introSeen') === '1'; }catch(e){}
-document.fonts.ready.then(() => { (reduce || seen) ? finish() : runIntro(); });
+document.fonts.ready.then(() => { reduce ? finish() : runIntro(); });
