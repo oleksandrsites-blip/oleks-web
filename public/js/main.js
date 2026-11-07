@@ -262,9 +262,10 @@ form.addEventListener('submit', async e => {
   e.preventDefault();
   const name = form.name.value.trim(), phone = form.phone.value.trim();
   const digits = phone.replace(/\D/g, '');
-  form.name.classList.toggle('err', name.length < 2);
+  const nameOk = /\p{L}{2}/u.test(name);
+  form.name.classList.toggle('err', !nameOk);
   form.phone.classList.toggle('err', digits.length < 10);
-  if(name.length < 2 || digits.length < 10){
+  if(!nameOk || digits.length < 10){
     leadMsg.className = 'lead-msg bad'; leadMsg.textContent = 'Перевірте ім\'я та номер телефону.'; return;
   }
   leadBtn.disabled = true; leadBtn.textContent = 'Надсилаю…'; leadMsg.textContent = '';
