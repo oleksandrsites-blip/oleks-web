@@ -22,7 +22,7 @@ img,video{display:block;max-width:100%}
 @keyframes blink{50%{opacity:0}}
 
 /* ================= типографіка ================= */
-.h1,.i-inner.big{font-family:var(--f-head);font-weight:800;letter-spacing:-.035em;line-height:1.02}
+.h1{font-family:var(--f-head);font-weight:800;letter-spacing:-.035em;line-height:1.02}
 .h1{font-size:clamp(48px,8.6vw,138px)}
 .h2{font-family:var(--f-head);font-weight:800;font-size:clamp(30px,4.4vw,68px);letter-spacing:-.03em;line-height:1.08}
 .h3{font-family:var(--f-head);font-weight:800;font-size:clamp(20px,1.9vw,28px);letter-spacing:-.02em;line-height:1.15}
@@ -57,23 +57,28 @@ img,video{display:block;max-width:100%}
 .ig{display:inline-grid;place-items:center;width:42px;height:42px;margin-right:-18px;border:1px solid var(--line);border-radius:50%;color:var(--text2);transition:border-color .2s,color .2s}
 .nav .ig:hover{border-color:var(--muted);color:var(--text)}
 
-/* ================= інтро ================= */
-.intro{position:fixed;inset:0;z-index:30;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
-.intro.gone{display:none}
-.i-inner{position:relative;display:inline-block;white-space:nowrap;transform-origin:0 50%;will-change:transform}
+/* ================= інтро: збирання на місці ================= */
+body.intro main>section:not(.hero),body.intro .ftr{opacity:0;transition:none}
+main>section,.ftr{transition:opacity .6s}
+.grow{position:relative;display:inline-block;white-space:nowrap;transform-origin:0 80%;will-change:transform,filter}
+.grow.mono{font-family:var(--f-mono);font-weight:400;letter-spacing:0;color:var(--muted)}
+.grow.growing{transition:transform .8s var(--ease),filter .8s var(--ease)}
+.grow .pre{display:inline-block;max-width:0;overflow:hidden;vertical-align:bottom;transition:max-width .5s var(--ease)}
+.grow .pre.in{max-width:4em}
 /* рамка «виділеного об'єкта», як у Figma */
-.sel{position:absolute;inset:-.1em -.14em -.06em -.12em;border:1px solid var(--lime);opacity:0;transform:scale(1.04);transition:opacity .3s,transform .45s var(--out);pointer-events:none}
-.sel i{position:absolute;width:7px;height:7px;background:var(--bg);border:1px solid var(--lime)}
+.sel{position:absolute;inset:-.06em -.1em -.04em -.08em;border:1px solid var(--lime);opacity:0;transition:opacity .25s;pointer-events:none}
+.sel i{position:absolute;width:8px;height:8px;background:var(--bg);border:1px solid var(--lime)}
 .sel i:nth-child(1){left:-4px;top:-4px}.sel i:nth-child(2){right:-4px;top:-4px}
 .sel i:nth-child(3){left:-4px;bottom:-4px}.sel i:nth-child(4){right:-4px;bottom:-4px}
-.i-inner.sel-on .sel{opacity:1;transform:none}
-.i-inner.mono{font-family:var(--f-mono);font-size:20px;color:var(--muted);line-height:1.02}
-.i-inner .pre{display:inline-block;max-width:0;overflow:hidden;vertical-align:bottom;transition:max-width .6s var(--ease)}
-.i-inner .pre.in{max-width:4em}
-.ann{display:flex;gap:10px;margin-top:28px;font-family:var(--f-mono);font-size:13px;color:var(--lime);flex-wrap:wrap;justify-content:center;padding:0 16px}
-.ann span{border:1px solid rgba(198,244,50,.35);padding:5px 10px;border-radius:6px;opacity:0;transform:translateY(6px);transition:opacity .35s,transform .35s}
-.ann span.on{opacity:1;transform:none}
-.ann.out span{opacity:0;transition-delay:0s!important}
+.sel b{position:absolute;left:50%;top:calc(100% + 10px);transform:translate(-50%,4px);padding:3px 8px;border-radius:5px;background:var(--lime);color:var(--ink);
+  font-family:var(--f-mono);font-weight:500;font-size:13px;letter-spacing:0;line-height:1.4;white-space:nowrap;opacity:0;transition:opacity .25s,transform .3s var(--out)}
+.sel b:empty{display:none}
+.grow.sel-on .sel{opacity:1}
+.grow.dim-on .sel b{opacity:1;transform:translate(-50%,0)}
+/* колір: лаймова заливка проходить по слову */
+.hs{position:relative}
+.hs.sweep::after{content:"";position:absolute;left:-.04em;right:-.04em;top:.12em;bottom:.02em;background:var(--lime);animation:sweep .55s var(--ease) both}
+@keyframes sweep{0%{transform:scaleX(0);transform-origin:left}48%{transform:scaleX(1);transform-origin:left}52%{transform:scaleX(1);transform-origin:right}100%{transform:scaleX(0);transform-origin:right}}
 
 /* ================= reveal ================= */
 .reveal{opacity:0;transform:translateY(14px);transition:opacity .8s,transform .8s var(--ease)}
@@ -83,7 +88,10 @@ img,video{display:block;max-width:100%}
 /* ================= hero ================= */
 .hero{position:relative;min-height:100svh;padding-top:120px;padding-bottom:44px;display:flex;flex-direction:column;justify-content:flex-end}
 .line{display:block;white-space:nowrap}
-.foot{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:32px;margin-top:48px;padding-top:28px;border-top:1px solid var(--line)}
+.foot{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:32px;margin-top:48px;padding-top:28px}
+.foot::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:var(--lime);transform:scaleX(0);transform-origin:left;transition:transform .7s var(--ease),background .6s}
+.foot.on::before{transform:scaleX(1)}
+.foot.done::before{background:var(--line)}
 .sub{max-width:480px;font-size:18px;line-height:1.55;color:var(--text2)}
 .cta-row{display:flex;align-items:center;gap:28px}
 .meta{display:flex;justify-content:space-between;margin-top:28px;font-family:var(--f-mono);font-size:13px;color:var(--dim)}

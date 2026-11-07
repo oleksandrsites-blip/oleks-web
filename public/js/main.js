@@ -4,8 +4,9 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const isMob = () => innerWidth <= 700;
 const wait = ms => new Promise(r => setTimeout(r, ms));
 
-/* ================= HERO: курсор-інтро ================= */
-const h1 = $('h1'), intro = $('intro'), iInner = $('iInner'), iText = $('iText'), iPre = $('iPre'), ann = $('ann');
+/* ================= HERO: сайт збирається на своєму місці ================= */
+/* текст → шрифт → колір → сітка → запуск */
+const h1 = $('h1'), foot = document.querySelector('.foot');
 const LINES = () => isMob()
   ? [[{t:'Від ідеї'}],[{t:'до сайту,'}],[{t:'який '},{t:'продає',lime:1}]]
   : [[{t:'Від ідеї'}],[{t:'до сайту, який'}],[{t:'продає',lime:1}]];
@@ -13,6 +14,7 @@ const LINES = () => isMob()
 const cur = document.createElement('span'); cur.className = 'cur';
 let segs = [], skipped = false, done = false;
 const sleep = ms => skipped ? Promise.resolve() : wait(ms);
+const ZW = '​';
 
 function buildH1(full){
   h1.innerHTML = ''; segs = [];
@@ -20,8 +22,8 @@ function buildH1(full){
     const l = document.createElement('span'); l.className = 'line';
     line.forEach(s => {
       const sp = document.createElement('span');
-      if(s.lime) sp.className = 'lime';
-      sp.dataset.t = s.t; sp.textContent = full ? s.t : '';
+      sp.className = 'hs' + (s.lime ? (full ? ' lime' : ' tolime') : '');
+      sp.dataset.t = s.t; sp.textContent = full ? s.t : ZW;
       l.appendChild(sp); segs.push(sp);
     });
     h1.appendChild(l);
@@ -30,6 +32,8 @@ function buildH1(full){
 }
 
 function showRest(){
+  document.body.classList.remove('intro');
+  foot.classList.add('on','done');
   $('hdr').classList.add('on');
   document.querySelectorAll('[data-r]').forEach(el => el.classList.add('on'));
 }
@@ -37,57 +41,82 @@ function showRest(){
 function finish(){
   if(done) return;
   skipped = true; done = true;
-  intro.classList.add('gone');
   buildH1(true); showRest();
   try{ sessionStorage.setItem('introSeen','1'); }catch(e){}
   layoutThread(); onScroll();
 }
 
-async function type(el, text, ms){ for(const ch of text){ if(skipped) return; el.textContent += ch; await sleep(ms); } }
+async function type(el, text, ms){
+  for(const ch of text){ if(skipped) return; el.textContent = el.textContent.replace(ZW,'') + ch; await sleep(ms); }
+}
 
 async function runIntro(){
+  document.body.classList.add('intro');
   buildH1(false);
-  segs[0].textContent = segs[0].dataset.t; segs[0].classList.add('ghost');
-  await sleep(350);
-  await type(iText, 'ідея', 75);
-  await sleep(220); if(skipped) return;
+  // перший рядок — окремий «об'єкт», що росте на місці
+  const first = segs[0];
+  first.textContent = '';
+  first.innerHTML = '<span class="grow mono" id="grow"><span class="pre" id="gPre">Від&nbsp;</span><span id="gTxt"></span>'
+    + '<span class="sel" aria-hidden="true"><i></i><i></i><i></i><i></i><b id="gDim"></b></span></span>';
+  const grow = $('grow'), gTxt = $('gTxt'), gPre = $('gPre');
+  gTxt.after(cur);
+  const small = 20 / parseFloat(getComputedStyle(h1).fontSize);
+  grow.style.transform = `scale(${small})`;
 
-  const target = parseFloat(getComputedStyle(h1).fontSize);
-  iInner.style.transition = 'none';
-  iInner.classList.replace('mono','big');
-  iInner.style.fontSize = target + 'px';
-  iInner.style.transform = `scale(${20/target})`;
-  iInner.style.filter = 'blur(6px)';
-  iInner.getBoundingClientRect();
-  iInner.style.transition = 'transform .85s var(--ease), filter .85s var(--ease)';
-  iInner.style.transform = 'scale(1)';
-  iInner.style.filter = 'blur(0)';
-  setTimeout(() => iInner.classList.add('sel-on'), 420);
-  ann.querySelectorAll('span').forEach((s,i) => setTimeout(() => s.classList.add('on'), 380 + i*90));
-  await sleep(880); if(skipped) return;
+  // 1. текст
+  await sleep(380);
+  await type(gTxt, 'ідея', 70);
+  await sleep(160); if(skipped) return;
 
-  iText.textContent = 'іде'; await sleep(120);
-  iText.textContent = 'ідеї'; await sleep(170);
-  iPre.classList.add('in'); ann.classList.add('out');
-  await sleep(520); if(skipped) return;
-  iInner.classList.remove('sel-on');
-
-  const from = iPre.getBoundingClientRect(), to = segs[0].getBoundingClientRect();
-  iInner.style.transition = 'transform .75s var(--ease)';
-  iInner.style.transform = `translate(${to.left-from.left}px,${to.top-from.top}px)`;
+  // 2. шрифт: моно → Unbounded, виростає з фокусом, рамка Figma
+  grow.classList.remove('mono');
+  grow.style.filter = 'blur(8px)';
+  grow.getBoundingClientRect();
+  grow.classList.add('growing');
+  grow.style.transform = 'scale(1)';
+  grow.style.filter = 'blur(0)';
+  setTimeout(() => grow.classList.add('sel-on'), 260);
   await sleep(760); if(skipped) return;
+  const r = grow.getBoundingClientRect();
+  $('gDim').textContent = `${Math.round(r.width)} × ${Math.round(r.height)}`;
+  grow.classList.add('dim-on');
+  await sleep(380); if(skipped) return;
 
-  intro.classList.add('gone');
-  segs[0].classList.remove('ghost'); segs[0].after(cur);
+  // правка: ідея → ідеї, + «Від»
+  gTxt.textContent = 'іде'; await sleep(110);
+  gTxt.textContent = 'ідеї'; await sleep(150);
+  gPre.classList.add('in');
+  $('gDim').textContent = '';
+  await sleep(520); if(skipped) return;
+  grow.classList.remove('sel-on','dim-on');
+
+  // решта заголовка — швидко
   for(let i = 1; i < segs.length; i++){
-    if(segs[i].parentNode !== segs[i-1].parentNode) await sleep(80);
+    if(segs[i].parentNode !== segs[i-1].parentNode) await sleep(70);
     segs[i].after(cur);
-    await type(segs[i], segs[i].dataset.t, 30);
+    await type(segs[i], segs[i].dataset.t, 26);
     if(skipped) return;
   }
+
+  // 3. колір: заливка проходить по «продає»
+  const lime = h1.querySelector('.tolime');
+  lime.classList.add('sweep');
+  setTimeout(() => { lime.classList.remove('tolime'); lime.classList.add('lime'); }, 260);
+
+  // 4. сітка: лінія прокреслюється, сіріє, з-під неї — решта
+  await sleep(180); if(skipped) return;
+  foot.classList.add('on');
+  await sleep(520); if(skipped) return;
+  foot.classList.add('done');
+  $('hdr').classList.add('on');
+  document.querySelectorAll('[data-r]').forEach(el => el.classList.add('on'));
+
+  document.body.classList.remove('intro');
   done = true;
+  // прибираємо службову розмітку, лишаємо чистий заголовок
+  setTimeout(() => { if(!skipped){ buildH1(true); layoutThread(); onScroll(); } }, 700);
   try{ sessionStorage.setItem('introSeen','1'); }catch(e){}
-  showRest(); layoutThread(); onScroll();
+  layoutThread(); onScroll();
 }
 
 /* пропуск інтро: будь-яка взаємодія */
