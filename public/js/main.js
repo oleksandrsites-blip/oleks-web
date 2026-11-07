@@ -167,12 +167,6 @@ addEventListener('resize', () => {
 });
 new ResizeObserver(() => { layoutThread(); onScroll(); }).observe(document.body);
 
-/* ================= Sticky CTA (мобілка) ================= */
-const sticky = $('sticky');
-let pastHero = false, inFinal = false;
-const updSticky = () => sticky.classList.toggle('on', pastHero && !inFinal);
-new IntersectionObserver(([e]) => { pastHero = !e.isIntersecting && e.boundingClientRect.top < 0; updSticky(); }).observe($('heroCta'));
-new IntersectionObserver(([e]) => { inFinal = e.isIntersecting; updSticky(); }, {rootMargin:'0px 0px -30% 0px'}).observe($('final'));
 
 /* ================= Відгук-кружечок ================= */
 const vid = $('review'), nv = $('noteVid');
@@ -256,6 +250,15 @@ document.querySelectorAll('.q-btn').forEach(b => b.addEventListener('click', () 
   if(open){ q.classList.add('open'); b.setAttribute('aria-expanded','true'); }
 }));
 
+/* ================= РОБОТИ: крапки під каруселлю (мобілка) ================= */
+const bento = document.querySelector('.bento'), dots = [...$('dots').children];
+bento.addEventListener('scroll', () => {
+  const cards = [...bento.children], mid = bento.scrollLeft + bento.clientWidth/2;
+  let best = 0, bd = Infinity;
+  cards.forEach((c,i) => { const d = Math.abs(c.offsetLeft + c.offsetWidth/2 - mid); if(d < bd){ bd = d; best = i; } });
+  dots.forEach((d,i) => d.classList.toggle('on', i === best));
+}, {passive:true});
+
 /* ================= ФОРМА → Telegram (Cloudflare Pages Function /api/lead) ================= */
 const form = $('lead'), leadMsg = $('leadMsg'), leadBtn = $('leadBtn');
 form.addEventListener('submit', async e => {
@@ -264,8 +267,8 @@ form.addEventListener('submit', async e => {
   const digits = phone.replace(/\D/g, '');
   const nameOk = /\p{L}{2}/u.test(name);
   form.name.classList.toggle('err', !nameOk);
-  form.phone.classList.toggle('err', digits.length < 10);
-  if(!nameOk || digits.length < 10){
+  form.phone.classList.toggle('err', digits.length !== 12);
+  if(!nameOk || digits.length !== 12){
     leadMsg.className = 'lead-msg bad'; leadMsg.textContent = 'Перевірте ім\'я та номер телефону.'; return;
   }
   leadBtn.disabled = true; leadBtn.textContent = 'Надсилаю…'; leadMsg.textContent = '';
@@ -282,6 +285,19 @@ form.addEventListener('submit', async e => {
   leadBtn.disabled = false; leadBtn.textContent = 'Отримати прототип';
 });
 ['name','phone'].forEach(n => form[n].addEventListener('input', () => form[n].classList.remove('err')));
+
+/* маска телефону: +380 XX XXX XX XX, не більше 12 цифр */
+form.phone.addEventListener('input', e => {
+  let d = form.phone.value.replace(/\D/g, '');
+  if(!d){ form.phone.value = ''; return; }
+  if(d.startsWith('380')) {}
+  else if(d.startsWith('80')) d = '3' + d;
+  else if(d.startsWith('0')) d = '38' + d;
+  else d = '380' + d;
+  d = d.slice(0, 12);
+  const parts = [d.slice(0,3), d.slice(3,5), d.slice(5,8), d.slice(8,10), d.slice(10,12)].filter(Boolean);
+  form.phone.value = '+' + parts.join(' ');
+});
 
 /* ================= старт ================= */
 if('scrollRestoration' in history) history.scrollRestoration = 'manual';
