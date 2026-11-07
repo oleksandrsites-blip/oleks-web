@@ -94,7 +94,10 @@ main>section,.ftr{transition:opacity .6s}
 .foot.done::before{background:var(--line)}
 .sub{max-width:480px;font-size:18px;line-height:1.55;color:var(--text2)}
 .cta-row{display:flex;align-items:center;gap:28px}
-.meta{display:flex;justify-content:space-between;margin-top:28px;font-family:var(--f-mono);font-size:13px;color:var(--dim)}
+.meta{display:flex;justify-content:space-between;align-items:center;gap:24px;margin-top:28px;font-family:var(--f-mono);font-size:13px;color:var(--dim)}
+.hfacts{display:flex;flex-wrap:wrap;gap:8px 28px;list-style:none;font-family:var(--f-body);font-size:15px;color:var(--text2)}
+.hfacts li{position:relative;padding-left:16px}
+.hfacts li::before{content:"";position:absolute;left:0;top:50%;width:6px;height:6px;margin-top:-3px;border-radius:50%;background:var(--lime)}
 
 /* ================= нитка ================= */
 .thread{position:absolute;top:0;left:0;pointer-events:none;z-index:5;overflow:visible}
@@ -265,6 +268,7 @@ main>section,.ftr{transition:opacity .6s}
 .lead-msg.ok{color:var(--lime)}
 .lead-msg.bad{color:#FF8A7A}
 .lead-msg a{text-decoration:underline}
+.lf-note{margin-top:12px;font-size:14px;line-height:1.5;color:var(--muted)}
 
 /* ================= футер ================= */
 .ftr{display:flex;align-items:center;justify-content:space-between;gap:24px;padding-top:32px;padding-bottom:40px;border-top:1px solid var(--line);flex-wrap:wrap}
@@ -301,6 +305,7 @@ main>section,.ftr{transition:opacity .6s}
   .btn{width:100%}
   .tlink{align-self:center;order:2}
   .meta span:last-child{display:none}
+  .hfacts{flex-direction:column;gap:10px;font-size:15px}
   .h2{font-size:28px}
   .work{padding-top:16vh}
   .feat{margin-top:8vh}
