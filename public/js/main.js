@@ -208,39 +208,24 @@ nv.addEventListener('click', () => {
 });
 vid.addEventListener('ended', () => { vid.muted = true; vid.loop = true; vid.play(); nv.classList.remove('playing'); nv.setAttribute('aria-label','Увімкнути відгук зі звуком'); });
 
-/* ================= ЧАТ «Як працюю» ================= */
-const box = $('msgs'), cStatus = $('cStatus');
-const SCRIPT = [
-  ['in','Привіт! Потрібен сайт для детейлінгу 🚗'],
-  ['out','Привіт! Розкажіть коротко про студію і киньте Instagram — за 1–3 дні покажу прототип першого екрана. Безкоштовно.'],
-  ['in','Ось 👇'],
-  ['out','Готово, гляньте з телефона:'],
-  ['card'],
-  ['in','Ого. А що далі?'],
-  ['out','Погоджуємо структуру й ціну, передоплата — і за 1–2 тижні сайт онлайн. Два кола правок уже включені.'],
-  ['sys','<b>oleks_bot</b> · 🔔 Нова заявка з сайту'],
-];
-function add(el){ box.appendChild(el); while(box.scrollHeight > box.clientHeight + 2 && box.children.length > 1) box.firstElementChild.remove(); }
-function bubble(cls, html){ const d = document.createElement('div'); d.className = 'm ' + cls; d.innerHTML = html; return d; }
-function card(){
-  const c = document.createElement('div'); c.className = 'mcard';
-  c.innerHTML = '<img src="assets/img/cases/detailing.jpg" alt=""><div><small>detailingrv.pages.dev</small>Прототип першого екрана</div>';
-  return c;
-}
-async function runChat(){
-  if(reduce){ SCRIPT.forEach(([t,x]) => add(t === 'card' ? card() : bubble(t, x))); return; }
-  for(const [t, x] of SCRIPT){
-    if(t === 'card'){ add(card()); await wait(1600); continue; }
-    if(t !== 'sys'){
-      const ty = bubble(t + ' typing', '<i></i><i></i><i></i>');
-      if(t === 'out') cStatus.textContent = 'друкує…';
-      add(ty); await wait(t === 'out' ? 1000 : 700); ty.remove();
-      cStatus.textContent = 'онлайн';
-    } else await wait(800);
-    add(bubble(t, x)); await wait(t === 'out' ? 1500 : 1000);
+/* ================= ЯК ПРАЦЮЮ: скрол-історія ================= */
+const story = $('story'), stepEls = [...document.querySelectorAll('.step')], screenEl = $('screen'), stepsList = $('steps');
+let curStep = -1;
+function onStory(){
+  const r = story.getBoundingClientRect();
+  const total = story.offsetHeight - innerHeight;
+  const p = Math.min(1, Math.max(0, -r.top / total));
+  stepsList.style.setProperty('--p', p.toFixed(3));
+  const s = Math.min(stepEls.length - 1, Math.floor(p * stepEls.length * 0.999));
+  if(s !== curStep){
+    curStep = s;
+    stepEls.forEach((el,i) => { el.classList.toggle('on', i === s); el.classList.toggle('done', i < s); });
+    screenEl.dataset.s = s;
   }
 }
-new IntersectionObserver(([e], o) => { if(e.isIntersecting){ o.disconnect(); runChat(); } }, {threshold:.35}).observe($('chat'));
+addEventListener('scroll', onStory, {passive:true});
+addEventListener('resize', onStory);
+onStory();
 
 /* ================= ЦІНИ: калькулятор ================= */
 const calc = document.querySelector('.calc'), cPrice = $('cPrice'), cTerm = $('cTerm'), botTog = $('botTog');

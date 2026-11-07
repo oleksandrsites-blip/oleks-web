@@ -102,24 +102,57 @@
     <div class="dots" id="dots" aria-hidden="true"><i class="on"></i><i></i><i></i></div>
   </section>
 
-  <!-- ============ ЯК ПРАЦЮЮ ============ -->
-  <section class="process wrap" id="process">
-    <div class="p-text">
-      <h2 class="h2">Від першого повідомлення&nbsp;до <span id="kw2">заявок із сайту</span></h2>
-      <p class="lead">Усе фіксуємо в переписці — нічого не загубиться.</p>
-      <dl class="facts">
-        <div><dt>1–3 дні</dt><dd>прототип першого екрана</dd></div>
-        <div><dt>1–2 тижні</dt><dd>лендинг під ключ</dd></div>
-        <div><dt>2 кола</dt><dd>правок уже в ціні</dd></div>
-      </dl>
+  <!-- ============ ЯК ПРАЦЮЮ: скрол-історія ============ -->
+  <section class="process" id="process">
+    <div class="wrap p-head">
+      <h2 class="h2">Від першого повідомлення до&nbsp;<span id="kw2">заявок із сайту</span></h2>
     </div>
 
-    <div class="chat" id="chat">
-      <div class="chat-top">
-        <span class="ava"><b>o<span class="cur still"></span></b></span>
-        <div><b>Олександр · oleks_web</b><small id="cStatus">онлайн</small></div>
+    <div class="story" id="story">
+      <div class="story-in wrap">
+        <ol class="steps" id="steps">
+          <li class="step on">
+            <h3>Пишете в Telegram</h3>
+            <p>Пара слів про бізнес і посилання на Instagram — цього достатньо, щоб почати.</p>
+          </li>
+          <li class="step">
+            <h3>Прототип за 1–3 дні</h3>
+            <p>Безкоштовно показую перший екран вашого сайту. Подобається — працюємо далі.</p>
+          </li>
+          <li class="step">
+            <h3>Доопрацьовуємо разом</h3>
+            <p>Тексти, фото, ціни — правки прямо в переписці. Два кола вже в ціні.</p>
+          </li>
+          <li class="step">
+            <h3>Запуск і заявки</h3>
+            <p>Лендинг онлайн за 1–2 тижні. Заявки з сайту приходять одразу у ваш Telegram.</p>
+          </li>
+        </ol>
+
+        <div class="phone" aria-hidden="true">
+          <div class="screen" id="screen" data-s="0">
+            <span class="island"></span>
+            <!-- 1: переписка -->
+            <div class="scr scr-chat">
+              <div class="pc-top"><span class="pc-ava"><b>o<span class="cur still"></span></b></span><div><b>Олександр · oleks_web</b><small>онлайн</small></div></div>
+              <div class="pc-msgs">
+                <p class="pm in">Привіт! Потрібен сайт для детейлінгу 🚗</p>
+                <p class="pm out">Привіт! Киньте Instagram — за 1–3 дні покажу прототип. Безкоштовно.</p>
+                <p class="pm in">Ось наш Instagram 👇</p>
+              </div>
+            </div>
+            <!-- 2–4: сайт -->
+            <div class="scr scr-site">
+              <img src="assets/img/cases/detailing-m.jpg" alt="" loading="lazy">
+              <span class="badge b-proto">прототип · безкоштовно</span>
+              <span class="pin p1"><i>К</i><em>Ціну — крупніше</em></span>
+              <span class="pin p2"><i>К</i><em>Інше фото авто</em></span>
+              <span class="badge b-live"><i></i>онлайн</span>
+              <div class="notif"><span class="n-ava"><b>o<span class="cur still"></span></b></span><div><b>oleks_bot</b><p>🔔 Нова заявка з сайту</p></div></div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="msgs" id="msgs" aria-live="off"></div>
     </div>
   </section>
 
