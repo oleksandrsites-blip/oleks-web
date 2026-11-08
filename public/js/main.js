@@ -231,6 +231,7 @@ function updCalc(){
   countTo(BASE[cType] + (cBot ? BOT : 0));
   cTerm.textContent = TERM[cType];
   calc.classList.toggle('bot', cBot);
+  setTg();
 }
 document.querySelectorAll('.opt').forEach(o => o.addEventListener('click', () => {
   cType = o.dataset.type;
@@ -240,6 +241,26 @@ document.querySelectorAll('.opt').forEach(o => o.addEventListener('click', () =>
 botTog.addEventListener('click', () => {
   cBot = !cBot; botTog.classList.toggle('on', cBot); botTog.setAttribute('aria-pressed', cBot); updCalc();
 });
+
+/* ================= TELEGRAM: готовий текст повідомлення для кожної кнопки ================= */
+const TG = 'https://t.me/LysOleksandr';
+const TG_TEXT = {
+  header: 'Привіт, Олександре! Хочу обговорити сайт для свого бізнесу.',
+  hero:   'Привіт! Хочу безкоштовний прототип першого екрана. Мій бізнес: ',
+  final:  'Привіт! Хочу сайт для свого бізнесу. Коротко про нього: ',
+  footer: 'Привіт, Олександре! Хочу обговорити сайт.',
+  price:  () => {
+    const what = (cType === 'landing' ? 'лендинг' : 'багатосторінковий сайт') + (cBot ? ' + Telegram-бот' : '');
+    return `Привіт! Хочу дізнатися точну ціну: ${what} (у калькуляторі від ${fmt(BASE[cType] + (cBot ? BOT : 0))} грн). Мій бізнес: `;
+  }
+};
+function setTg(){
+  document.querySelectorAll('a[data-tg]').forEach(a => {
+    const t = TG_TEXT[a.dataset.tg];
+    a.href = TG + '?text=' + encodeURIComponent(typeof t === 'function' ? t() : t);
+  });
+}
+setTg();
 
 /* ================= ПИТАННЯ ================= */
 document.querySelectorAll('.q-btn').forEach(b => b.addEventListener('click', () => {
