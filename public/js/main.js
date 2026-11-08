@@ -208,24 +208,10 @@ nv.addEventListener('click', () => {
 });
 vid.addEventListener('ended', () => { vid.muted = true; vid.loop = true; vid.play(); nv.classList.remove('playing'); nv.setAttribute('aria-label','Увімкнути відгук зі звуком'); });
 
-/* ================= ЯК ПРАЦЮЮ: скрол-історія ================= */
-const story = $('story'), stepEls = [...document.querySelectorAll('.step')], screenEl = $('screen'), stepsList = $('steps');
-let curStep = -1;
-function onStory(){
-  const r = story.getBoundingClientRect();
-  const total = story.offsetHeight - innerHeight;
-  const p = Math.min(1, Math.max(0, -r.top / total));
-  stepsList.style.setProperty('--p', p.toFixed(3));
-  const s = Math.min(stepEls.length - 1, Math.floor(p * stepEls.length * 0.999));
-  if(s !== curStep){
-    curStep = s;
-    stepEls.forEach((el,i) => { el.classList.toggle('on', i === s); el.classList.toggle('done', i < s); });
-    screenEl.dataset.s = s;
-  }
-}
-addEventListener('scroll', onStory, {passive:true});
-addEventListener('resize', onStory);
-onStory();
+/* ================= ЯК ПРАЦЮЮ: поява етапів по черзі ================= */
+const flow = $('flow');
+if(reduce) flow.classList.add('in');
+else new IntersectionObserver(([e], o) => { if(e.isIntersecting){ flow.classList.add('in'); o.disconnect(); } }, {threshold:.25}).observe(flow);
 
 /* ================= ЦІНИ: калькулятор ================= */
 const calc = document.querySelector('.calc'), cPrice = $('cPrice'), cTerm = $('cTerm'), botTog = $('botTog');
