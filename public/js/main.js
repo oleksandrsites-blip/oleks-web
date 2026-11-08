@@ -301,3 +301,76 @@ form.phone.addEventListener('input', e => {
 if('scrollRestoration' in history) history.scrollRestoration = 'manual';
 scrollTo(0,0);
 document.fonts.ready.then(() => { reduce ? finish() : runIntro(); });
+
+/* ================= HERO: сітка фону ледь вигинається під курсором (тільки десктоп з мишкою) ================= */
+(function(){
+  const cv = $('heroGrid'), hero = document.querySelector('.hero');
+  if(reduce || !matchMedia('(hover:hover) and (pointer:fine)').matches) return;
+  const ctx = cv.getContext('2d');
+  const CELL = 96, R = 230, PUSH = 16, STEP = 12;     // крок сітки як у фону, радіус і сила вигину
+  let W = 0, H = 0, dpr = 1, offX = 0, active = false, raf = 0;
+  const m = {x:-9999, y:-9999}, s = {x:-9999, y:-9999, k:0};   // ціль і згладжена позиція курсора
+  function size(){
+    if(innerWidth <= 900){ cv.style.display = 'none'; active = false; return; }
+    const r = hero.getBoundingClientRect();
+    W = document.documentElement.clientWidth; H = Math.ceil(r.height);
+    offX = r.left;                                    // canvas від краю вікна, щоб лінії співпали з фоном
+    dpr = Math.min(2, devicePixelRatio || 1);
+    cv.style.display = 'block'; cv.style.left = (-offX) + 'px';
+    cv.style.width = W + 'px'; cv.style.height = H + 'px';
+    cv.width = W * dpr; cv.height = H * dpr;
+    draw();
+  }
+  function warp(x, y){
+    const dx = x - s.x, dy = y - s.y, d = Math.hypot(dx, dy);
+    if(d >= R || d === 0) return [x, y];
+    const f = Math.pow(1 - d / R, 2) * PUSH * s.k;
+    return [x + dx / d * f, y + dy / d * f];
+  }
+  function draw(){
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.fillStyle = '#0B0D10'; ctx.fillRect(0, 0, W, H);
+    ctx.lineWidth = 1;
+    const line = (pts) => {
+      ctx.beginPath();
+      pts.forEach(([x,y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y));
+      ctx.stroke();
+    };
+    const all = [];
+    for(let x = CELL - .5; x < W + CELL; x += CELL){
+      const pts = []; for(let y = 0; y <= H + STEP; y += STEP) pts.push(warp(x, y)); all.push(pts);
+    }
+    for(let y = CELL - .5; y < H + CELL; y += CELL){
+      const pts = []; for(let x = 0; x <= W + STEP; x += STEP) pts.push(warp(x, y)); all.push(pts);
+    }
+    ctx.strokeStyle = 'rgba(255,255,255,.028)';
+    all.forEach(line);
+    // «ліхтарик»: біля курсора лінії трохи світліші, щоб вигин було видно
+    if(s.k > .01){
+      const g = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, R);
+      g.addColorStop(0, `rgba(198,244,50,${.22 * s.k})`);
+      g.addColorStop(.45, `rgba(255,255,255,${.08 * s.k})`);
+      g.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.strokeStyle = g;
+      all.forEach(line);
+    }
+  }
+  function tick(){
+    s.x += (m.x - s.x) * .14; s.y += (m.y - s.y) * .14;
+    s.k += ((active ? 1 : 0) - s.k) * .1;
+    draw();
+    const moving = Math.abs(m.x - s.x) > .3 || Math.abs(m.y - s.y) > .3 || Math.abs((active ? 1 : 0) - s.k) > .01;
+    raf = moving ? requestAnimationFrame(tick) : 0;
+  }
+  const kick = () => { if(!raf) raf = requestAnimationFrame(tick); };
+  hero.addEventListener('pointermove', e => {
+    const r = cv.getBoundingClientRect();
+    m.x = e.clientX - r.left; m.y = e.clientY - r.top;
+    if(!active){ s.x = m.x; s.y = m.y; }
+    active = true; kick();
+  });
+  hero.addEventListener('pointerleave', () => { active = false; kick(); });
+  addEventListener('resize', size);
+  new ResizeObserver(size).observe(hero);
+  size();
+})();
