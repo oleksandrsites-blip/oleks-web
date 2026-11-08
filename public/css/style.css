@@ -32,6 +32,8 @@ img,video{display:block;max-width:100%}
 .lime{color:var(--lime)}
 #kw1,#kw2{white-space:nowrap}
 .ghost{visibility:hidden}
+/* курсор-заглушка до старту інтро — розміром як моно-«ідея» */
+.h1 .line>.cur:only-child{font-size:20px}
 
 /* ================= кнопки ================= */
 .btn{display:inline-flex;align-items:center;justify-content:center;height:58px;padding:0 30px;border-radius:999px;background:var(--lime);color:var(--ink);

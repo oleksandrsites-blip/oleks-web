@@ -62,8 +62,8 @@ async function runIntro(){
   const small = 20 / parseFloat(getComputedStyle(h1).fontSize);
   grow.style.transform = `scale(${small})`;
 
-  // 1. текст
-  await sleep(380);
+  // 1. текст (курсор уже блимав, поки вантажились шрифти — стартуємо одразу)
+  await sleep(120);
   await type(gTxt, 'ідея', 70);
   await sleep(160); if(skipped) return;
 
@@ -321,7 +321,10 @@ form.phone.addEventListener('input', e => {
 /* ================= старт ================= */
 if('scrollRestoration' in history) history.scrollRestoration = 'manual';
 scrollTo(0,0);
-document.fonts.ready.then(() => { reduce ? finish() : runIntro(); });
+// не тримаємо порожній екран: якщо шрифти не встигли за ~1 с — одразу готовий перший екран
+if(reduce) finish();
+else Promise.race([document.fonts.ready.then(() => 'ok'), wait(1000).then(() => 'slow')])
+  .then(r => r === 'ok' ? runIntro() : finish());
 
 /* ================= HERO: сітка фону ледь вигинається під курсором (тільки десктоп з мишкою) ================= */
 (function(){
