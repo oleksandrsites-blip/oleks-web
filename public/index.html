@@ -167,13 +167,34 @@
             <span class="dot"></span><b>Складний проєкт</b>
             <span class="o-d">Квізи, калькулятори вартості, онлайн-бронювання, інтеграція з CRM та оплатою.</span>
           </button>
+          <button class="opt" type="button" role="radio" aria-checked="false" data-type="shop">
+            <span class="dot"></span><b>Інтернет-магазин</b>
+            <span class="o-d">Каталог, кошик, онлайн-оплата і Нова Пошта. Товари додаєте самі через адмінку.</span>
+          </button>
         </div>
         <p class="c-label">Додатково</p>
-        <button class="tog" id="botTog" type="button" aria-pressed="false">
-          <span class="sw"></span>
-          <span class="t-txt"><b>Telegram-бот</b><span class="o-d">Записує клієнтів, відповідає на типові питання або показує каталог.</span></span>
-          <em>+ від 5 000 грн</em>
-        </button>
+        <div class="adds">
+          <button class="tog" type="button" aria-pressed="false" data-add="bot">
+            <span class="sw"></span>
+            <span class="t-txt"><b>Telegram-бот</b><span class="o-d">Записує клієнтів, відповідає на типові питання.</span></span>
+            <em>+ від 5 000 грн</em>
+          </button>
+          <button class="tog" type="button" aria-pressed="false" data-add="app">
+            <span class="sw"></span>
+            <span class="t-txt"><b>Mini App у Telegram</b><span class="o-d">Каталог, запис чи замовлення прямо всередині Telegram.</span></span>
+            <em>+ від 12 000 грн</em>
+          </button>
+          <button class="tog" type="button" aria-pressed="false" data-add="pay">
+            <span class="sw"></span>
+            <span class="t-txt"><b>Онлайн-оплата</b><span class="o-d">Monobank, LiqPay або WayForPay — гроші одразу на сайті.</span></span>
+            <em data-p="+ від 3 000 грн">+ від 3 000 грн</em>
+          </button>
+          <button class="tog" type="button" aria-pressed="false" data-add="lang">
+            <span class="sw"></span>
+            <span class="t-txt"><b>Друга мова</b><span class="o-d">Англійська, польська — для клієнтів з-за кордону.</span></span>
+            <em>+ від 3 000 грн</em>
+          </button>
+        </div>
       </div>
 
       <div class="calc-res" aria-live="polite">
@@ -184,10 +205,15 @@
           <li>Структура й тексти під заявки</li>
           <li data-t="multi">До 7 сторінок або каталог</li>
           <li data-t="complex">Квізи, бронювання, CRM, оплата</li>
-          <li data-t="multi complex">SEO — щоб знаходили в Google</li>
+          <li data-t="shop">Кошик, оплата, Нова Пошта</li>
+          <li data-t="shop">Адмінка — товари додаєте самі</li>
+          <li data-t="multi complex shop">SEO — щоб знаходили в Google</li>
           <li>Заявки в Telegram + пікселі реклами</li>
           <li>Адаптив, домен, 2 кола правок</li>
-          <li class="c-bot">Telegram-бот під ваші задачі</li>
+          <li data-a="bot">Telegram-бот під ваші задачі</li>
+          <li data-a="app">Mini App у Telegram</li>
+          <li data-a="pay">Онлайн-оплата на сайті</li>
+          <li data-a="lang">Друга мова сайту</li>
         </ul>
         <p class="c-term">Термін: <b id="cTerm">5–10 днів</b></p>
         <a href="https://t.me/LysOleksandr" data-tg="price" target="_blank" rel="noopener" class="btn">Дізнатися точну ціну</a>
@@ -220,7 +246,7 @@
       </div>
       <div class="q">
         <button class="q-btn" type="button" aria-expanded="false">Як змінити ціни чи фото після запуску?<i class="plus" aria-hidden="true"></i></button>
-        <div class="q-a"><div><p>Напишіть мені — внесу. Перший місяць після запуску дрібні правки безкоштовні, далі — за домовленістю.</p></div></div>
+        <div class="q-a"><div><p>Напишіть мені — внесу. Перший місяць після запуску дрібні правки безкоштовні. Далі — разово або на супроводі від 1 500 грн/міс: правки, оновлення і контроль, щоб сайт працював без збоїв.</p></div></div>
       </div>
       <div class="q">
         <button class="q-btn" type="button" aria-expanded="false">Як відбувається оплата?<i class="plus" aria-hidden="true"></i></button>

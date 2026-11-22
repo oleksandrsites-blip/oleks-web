@@ -214,11 +214,17 @@ if(reduce) flow.classList.add('in');
 else new IntersectionObserver(([e], o) => { if(e.isIntersecting){ flow.classList.add('in'); o.disconnect(); } }, {threshold:.25}).observe(flow);
 
 /* ================= ЦІНИ: калькулятор ================= */
-const calc = document.querySelector('.calc'), cPrice = $('cPrice'), cTerm = $('cTerm'), botTog = $('botTog');
-const BASE = {landing:11000, multi:16000, complex:20000}, BOT = 5000, TERM = {landing:'5–10 днів', multi:'1–2 тижні', complex:'2–3 тижні'};
-const NAME = {landing:'лендинг', multi:'багатосторінковий сайт', complex:'складний проєкт'};
-let cType = 'landing', cBot = false, shown = BASE.landing;
+const calc = document.querySelector('.calc'), cPrice = $('cPrice'), cTerm = $('cTerm');
+const BASE = {landing:11000, multi:16000, complex:20000, shop:30000};
+const TERM = {landing:'5–10 днів', multi:'1–2 тижні', complex:'2–3 тижні', shop:'3–4 тижні'};
+const NAME = {landing:'лендинг', multi:'багатосторінковий сайт', complex:'складний проєкт', shop:'інтернет-магазин'};
+const ADD = {bot:{p:5000, n:'Telegram-бот'}, app:{p:12000, n:'Mini App у Telegram'}, pay:{p:3000, n:'онлайн-оплата'}, lang:{p:3000, n:'друга мова'}};
+const PAY_IN = ['complex', 'shop'];  // там оплата вже входить
+let cType = 'landing', shown = BASE.landing;
+const cAdd = new Set();
 const fmt = n => n.toLocaleString('uk-UA').replace(/\s/g, ' ');
+const activeAdds = () => [...cAdd].filter(k => !(k === 'pay' && PAY_IN.includes(cType)));
+const total = () => activeAdds().reduce((t, k) => t + ADD[k].p, BASE[cType]);
 function countTo(to){
   const from = shown, t0 = performance.now(), dur = reduce ? 0 : 450;
   shown = to;
@@ -229,10 +235,14 @@ function countTo(to){
   })(t0);
 }
 function updCalc(){
-  countTo(BASE[cType] + (cBot ? BOT : 0));
+  countTo(total());
   cTerm.textContent = TERM[cType];
-  calc.classList.toggle('bot', cBot);
   calc.dataset.type = cType;
+  const act = activeAdds();
+  document.querySelectorAll('.c-list [data-a]').forEach(li => li.classList.toggle('show', act.includes(li.dataset.a)));
+  const pay = document.querySelector('.tog[data-add=pay]'), incl = PAY_IN.includes(cType);
+  pay.classList.toggle('incl', incl); pay.disabled = incl;
+  pay.querySelector('em').textContent = incl ? 'вже входить' : pay.querySelector('em').dataset.p;
   setTg();
 }
 document.querySelectorAll('.opt').forEach(o => o.addEventListener('click', () => {
@@ -240,9 +250,11 @@ document.querySelectorAll('.opt').forEach(o => o.addEventListener('click', () =>
   document.querySelectorAll('.opt').forEach(x => { const on = x === o; x.classList.toggle('on', on); x.setAttribute('aria-checked', on); });
   updCalc();
 }));
-botTog.addEventListener('click', () => {
-  cBot = !cBot; botTog.classList.toggle('on', cBot); botTog.setAttribute('aria-pressed', cBot); updCalc();
-});
+document.querySelectorAll('.tog[data-add]').forEach(t => t.addEventListener('click', () => {
+  const k = t.dataset.add, on = !cAdd.has(k);
+  on ? cAdd.add(k) : cAdd.delete(k);
+  t.classList.toggle('on', on); t.setAttribute('aria-pressed', on); updCalc();
+}));
 
 /* ================= TELEGRAM: готовий текст повідомлення для кожної кнопки ================= */
 const TG = 'https://t.me/LysOleksandr';
@@ -252,8 +264,8 @@ const TG_TEXT = {
   final:  'Привіт! Хочу сайт для свого бізнесу. Коротко про нього: ',
   footer: 'Привіт, Олександре! Хочу обговорити сайт.',
   price:  () => {
-    const what = NAME[cType] + (cBot ? ' + Telegram-бот' : '');
-    return `Привіт! Хочу дізнатися точну ціну: ${what} (у калькуляторі від ${fmt(BASE[cType] + (cBot ? BOT : 0))} грн). Мій бізнес: `;
+    const what = [NAME[cType], ...activeAdds().map(k => ADD[k].n)].join(' + ');
+    return `Привіт! Хочу дізнатися точну ціну: ${what} (у калькуляторі від ${fmt(total())} грн). Мій бізнес: `;
   }
 };
 function setTg(){

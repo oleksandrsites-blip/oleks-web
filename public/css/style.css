@@ -172,7 +172,8 @@ main>section,.ftr{transition:opacity .6s}
 .calc{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:24px;margin-top:64px;align-items:stretch}
 .c-label{font-family:var(--f-mono);font-size:13px;color:var(--muted);margin-bottom:14px}
 .calc-opts .c-label:not(:first-child){margin-top:36px}
-.seg{display:grid;grid-template-columns:1fr;gap:12px}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.adds{display:grid;gap:10px}
 .opt,.tog{position:relative;display:block;width:100%;text-align:left;padding:26px 26px 26px 64px;border:1px solid var(--line);border-radius:20px;background:var(--surface);
   transition:border-color .25s,background .25s}
 .opt:hover,.tog:hover{border-color:var(--muted)}
@@ -181,7 +182,10 @@ main>section,.ftr{transition:opacity .6s}
 .opt .dot{position:absolute;left:24px;top:28px;width:22px;height:22px;border-radius:50%;border:1px solid var(--muted);transition:.25s}
 .opt.on{border-color:var(--lime);background:linear-gradient(140deg,rgba(198,244,50,.08),rgba(198,244,50,0) 70%),var(--surface)}
 .opt.on .dot{border-color:var(--lime);box-shadow:inset 0 0 0 5px var(--surface),inset 0 0 0 11px var(--lime)}
-.tog{display:flex;align-items:center;gap:20px;padding-left:26px}
+.tog{display:flex;align-items:center;gap:20px;padding:18px 24px}
+.tog .o-d{margin-top:4px;font-size:15px}
+.tog.incl{opacity:.55;cursor:default}.tog.incl:hover{border-color:var(--line)}
+.tog.incl em{font-family:var(--f-body);font-weight:500;font-size:15px}
 .tog .t-txt{flex:1}
 .tog em{flex:none;font-style:normal;font-family:var(--f-head);font-weight:800;font-size:18px;color:var(--muted);white-space:nowrap;transition:color .25s}
 .sw{position:relative;flex:none;width:52px;height:30px;border-radius:999px;background:var(--line);transition:background .25s}
@@ -199,10 +203,9 @@ main>section,.ftr{transition:opacity .6s}
 .c-list{list-style:none;margin-top:32px;border-top:1px solid var(--line)}
 .c-list li{position:relative;padding:12px 0 12px 26px;border-bottom:1px solid var(--line);font-size:16px;color:var(--text2)}
 .c-list li::before{content:"";position:absolute;left:2px;top:50%;width:10px;height:5px;margin-top:-5px;border-left:2px solid var(--lime);border-bottom:2px solid var(--lime);transform:rotate(-45deg)}
-.c-list .c-bot{display:none;color:var(--text)}
-.c-list [data-t]{display:none}
-.calc[data-type=multi] .c-list [data-t~=multi],.calc[data-type=complex] .c-list [data-t~=complex]{display:block;animation:pop .35s var(--out) both}
-.calc.bot .c-list .c-bot{display:block;animation:pop .35s var(--out) both}
+.c-list [data-t],.c-list [data-a]{display:none}
+.c-list [data-a]{color:var(--text)}
+.calc[data-type=multi] .c-list [data-t~=multi],.calc[data-type=complex] .c-list [data-t~=complex],.calc[data-type=shop] .c-list [data-t~=shop],.c-list [data-a].show{display:block;animation:pop .35s var(--out) both}
 .c-term{margin-top:20px;font-size:16px;color:var(--muted)}
 .c-term b{color:var(--text);font-weight:600}
 .calc-res .btn{margin-top:auto;width:100%}
@@ -351,7 +354,8 @@ main>section,.ftr{transition:opacity .6s}
   .fs p{margin-top:6px;font-size:16px}
 
   /* --- калькулятор: компактно --- */
-  .seg{gap:10px}
+  .seg{grid-template-columns:1fr;gap:10px}
+  .adds{gap:8px}
   .opt{padding:15px 16px 15px 50px;border-radius:16px}
   .opt .dot{left:16px;top:50%;margin-top:-11px}
   .opt .o-d,.tog .o-d{display:none}
