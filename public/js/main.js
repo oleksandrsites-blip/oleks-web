@@ -263,6 +263,7 @@ const TG_TEXT = {
   hero:   'Привіт! Хочу безкоштовний прототип першого екрана. Мій бізнес: ',
   final:  'Привіт! Хочу сайт для свого бізнесу. Коротко про нього: ',
   footer: 'Привіт, Олександре! Хочу обговорити сайт.',
+  faq:    'Привіт! Маю питання щодо сайту: ',
   price:  () => {
     const what = [NAME[cType], ...activeAdds().map(k => ADD[k].n)].join(' + ');
     return `Привіт! Хочу дізнатися точну ціну: ${what} (у калькуляторі від ${fmt(total())} грн). Мій бізнес: `;
@@ -411,4 +412,32 @@ else Promise.race([document.fonts.ready.then(() => 'ok'), wait(1000).then(() => 
   addEventListener('resize', size);
   new ResizeObserver(size).observe(hero);
   size();
+})();
+
+/* ================= ПИТАННЯ: бульбашки чату проявляються й розмазуються при скролі ================= */
+(() => {
+  const chat = $('chat'), sec = $('faq');
+  if(!chat || reduce || !matchMedia('(min-width:901px)').matches) return;
+  const bubs = [...chat.children], N = bubs.length, W = .22;
+  let raf = 0;
+  const ease = x => x * x * (3 - 2 * x);
+  function draw(){
+    raf = 0;
+    const r = sec.getBoundingClientRect(), vh = innerHeight;
+    const p = Math.min(1, Math.max(0, (vh - r.top) / (r.height + vh * .5)));
+    bubs.forEach((b, i) => {
+      const t = (p - (i + .5) / N * .9 - .05) / W;          // -1..1 — вікно життя бульбашки
+      if(t <= -1 || t >= 1){ b.style.opacity = 0; return; }
+      let o, blur, tx = 0, ty = 0, sx = 1;
+      if(t < -.35){ const k = ease((t + 1) / .65); o = k; blur = (1 - k) * 8; ty = (1 - k) * 18; }
+      else if(t <= .2){ o = 1; blur = 0; }
+      else { const k = ease((t - .2) / .8); o = 1 - k; blur = k * 14; sx = 1 + k * .6; tx = (b.classList.contains('me') ? 1 : -1) * k * 60; }
+      b.style.opacity = (o * .75).toFixed(3);
+      b.style.filter = `blur(${blur.toFixed(1)}px)`;
+      b.style.transform = `translate(${tx.toFixed(1)}px,${ty.toFixed(1)}px) scaleX(${sx.toFixed(3)})`;
+    });
+  }
+  addEventListener('scroll', () => { if(!raf) raf = requestAnimationFrame(draw); }, {passive:true});
+  addEventListener('resize', draw);
+  draw();
 })();

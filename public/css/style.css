@@ -219,6 +219,23 @@ main>section,.ftr{transition:opacity .6s}
 /* ================= питання ================= */
 .faq{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:64px;padding-bottom:20vh;align-items:start}
 .faq-head{position:sticky;top:110px}
+.faq-head>.h2{position:relative;z-index:1}
+.faq-cta{position:relative;z-index:1;max-width:400px;margin-top:48px;padding:26px;border:1px solid var(--line);border-radius:20px;background:var(--surface)}
+.fc-t{font-family:var(--f-head);font-weight:800;font-size:20px;letter-spacing:-.02em}
+.fc-d{margin-top:8px;font-size:16px;line-height:1.5;color:var(--text2)}
+.faq-cta .btn-line{margin-top:20px;height:52px;color:var(--lime)}
+/* бульбашки чату за заголовком: проявляються і розмазуються при скролі (десктоп) */
+.chat{position:relative;max-width:440px;height:160px;margin-top:24px;pointer-events:none;z-index:0;display:none}
+.bub{position:absolute;padding:11px 16px;border-radius:18px 18px 18px 6px;background:var(--surface2);border:1px solid var(--line);
+  font-size:15px;color:var(--text2);white-space:nowrap;opacity:0;will-change:transform,opacity,filter}
+.bub.me{border-radius:18px 18px 6px 18px;background:rgba(198,244,50,.08);border-color:rgba(198,244,50,.25);color:var(--lime)}
+.bub:nth-child(1){left:0;top:0}
+.bub:nth-child(2){right:0;top:22%}
+.bub:nth-child(3){left:4%;top:46%}
+.bub:nth-child(4){right:6%;top:70%}
+.bub:nth-child(5){left:12%;top:10%}
+.bub:nth-child(6){right:2%;top:56%}
+@media (min-width:901px) and (prefers-reduced-motion:no-preference){.chat{display:block}}
 .qs{border-top:1px solid var(--line)}
 .q{border-bottom:1px solid var(--line)}
 .q-btn{display:flex;align-items:center;justify-content:space-between;gap:24px;width:100%;padding:28px 0;text-align:left;font-family:var(--f-head);font-weight:500;
@@ -288,7 +305,9 @@ main>section,.ftr{transition:opacity .6s}
   .bento{grid-template-columns:1fr;gap:64px;margin-top:10vh;padding-top:40px}
   .calc{grid-template-columns:1fr;margin-top:40px}
   .faq{grid-template-columns:1fr;gap:32px}
-  .faq-head{position:static}
+  .faq-head{display:contents}
+  .faq-cta{order:3;max-width:none;margin-top:8px}
+  .qs{order:2}
   .flow{grid-template-columns:repeat(2,minmax(0,1fr))}
   .f-grid{grid-template-columns:1fr;gap:40px}
 }
