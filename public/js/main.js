@@ -218,7 +218,7 @@ const calc = document.querySelector('.calc'), cPrice = $('cPrice'), cTerm = $('c
 const BASE = {landing:11000, multi:16000, complex:20000, shop:30000};
 const TERM = {landing:'5–10 днів', multi:'1–2 тижні', complex:'2–3 тижні', shop:'3–4 тижні'};
 const NAME = {landing:'лендинг', multi:'багатосторінковий сайт', complex:'складний проєкт', shop:'інтернет-магазин'};
-const ADD = {bot:{p:5000, n:'Telegram-бот'}, app:{p:12000, n:'Mini App у Telegram'}, pay:{p:3000, n:'онлайн-оплата'}, lang:{p:3000, n:'друга мова'}};
+const ADD = {bot:{p:5000, n:'Telegram-бот'}, app:{p:12000, n:'Mini App у Telegram'}, pay:{p:3000, n:'онлайн-оплата'}, lang:{p:3000, n:'ще одна мова'}};
 const PAY_IN = ['complex', 'shop'];  // там оплата вже входить
 let cType = 'landing', shown = BASE.landing;
 const cAdd = new Set();
