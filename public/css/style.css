@@ -172,7 +172,7 @@ main>section,.ftr{transition:opacity .6s}
 .calc{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:24px;margin-top:64px;align-items:stretch}
 .c-label{font-family:var(--f-mono);font-size:13px;color:var(--muted);margin-bottom:14px}
 .calc-opts .c-label:not(:first-child){margin-top:36px}
-.seg{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.seg{display:grid;grid-template-columns:1fr;gap:12px}
 .opt,.tog{position:relative;display:block;width:100%;text-align:left;padding:26px 26px 26px 64px;border:1px solid var(--line);border-radius:20px;background:var(--surface);
   transition:border-color .25s,background .25s}
 .opt:hover,.tog:hover{border-color:var(--muted)}
@@ -200,6 +200,8 @@ main>section,.ftr{transition:opacity .6s}
 .c-list li{position:relative;padding:12px 0 12px 26px;border-bottom:1px solid var(--line);font-size:16px;color:var(--text2)}
 .c-list li::before{content:"";position:absolute;left:2px;top:50%;width:10px;height:5px;margin-top:-5px;border-left:2px solid var(--lime);border-bottom:2px solid var(--lime);transform:rotate(-45deg)}
 .c-list .c-bot{display:none;color:var(--text)}
+.c-list [data-t]{display:none}
+.calc[data-type=multi] .c-list [data-t~=multi],.calc[data-type=complex] .c-list [data-t~=complex]{display:block;animation:pop .35s var(--out) both}
 .calc.bot .c-list .c-bot{display:block;animation:pop .35s var(--out) both}
 .c-term{margin-top:20px;font-size:16px;color:var(--muted)}
 .c-term b{color:var(--text);font-weight:600}
@@ -349,9 +351,10 @@ main>section,.ftr{transition:opacity .6s}
   .fs p{margin-top:6px;font-size:16px}
 
   /* --- калькулятор: компактно --- */
-  .seg{grid-template-columns:1fr 1fr;gap:10px}
-  .opt{padding:16px 10px;text-align:center;border-radius:16px}
-  .opt .dot,.opt .o-d,.tog .o-d{display:none}
+  .seg{gap:10px}
+  .opt{padding:15px 16px 15px 50px;border-radius:16px}
+  .opt .dot{left:16px;top:50%;margin-top:-11px}
+  .opt .o-d,.tog .o-d{display:none}
   .opt b,.tog b{font-family:var(--f-body);font-weight:600;font-size:16px;letter-spacing:0}
   .calc-opts .c-label:not(:first-child){margin-top:22px}
   .tog{padding:14px 16px;gap:12px;flex-wrap:nowrap;border-radius:16px}

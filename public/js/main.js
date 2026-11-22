@@ -215,7 +215,8 @@ else new IntersectionObserver(([e], o) => { if(e.isIntersecting){ flow.classList
 
 /* ================= ЦІНИ: калькулятор ================= */
 const calc = document.querySelector('.calc'), cPrice = $('cPrice'), cTerm = $('cTerm'), botTog = $('botTog');
-const BASE = {landing:8000, multi:16000}, BOT = 4000, TERM = {landing:'1–2 тижні', multi:'2–4 тижні'};
+const BASE = {landing:11000, multi:16000, complex:20000}, BOT = 5000, TERM = {landing:'5–10 днів', multi:'1–2 тижні', complex:'2–3 тижні'};
+const NAME = {landing:'лендинг', multi:'багатосторінковий сайт', complex:'складний проєкт'};
 let cType = 'landing', cBot = false, shown = BASE.landing;
 const fmt = n => n.toLocaleString('uk-UA').replace(/\s/g, ' ');
 function countTo(to){
@@ -231,6 +232,7 @@ function updCalc(){
   countTo(BASE[cType] + (cBot ? BOT : 0));
   cTerm.textContent = TERM[cType];
   calc.classList.toggle('bot', cBot);
+  calc.dataset.type = cType;
   setTg();
 }
 document.querySelectorAll('.opt').forEach(o => o.addEventListener('click', () => {
@@ -250,7 +252,7 @@ const TG_TEXT = {
   final:  'Привіт! Хочу сайт для свого бізнесу. Коротко про нього: ',
   footer: 'Привіт, Олександре! Хочу обговорити сайт.',
   price:  () => {
-    const what = (cType === 'landing' ? 'лендинг' : 'багатосторінковий сайт') + (cBot ? ' + Telegram-бот' : '');
+    const what = NAME[cType] + (cBot ? ' + Telegram-бот' : '');
     return `Привіт! Хочу дізнатися точну ціну: ${what} (у калькуляторі від ${fmt(BASE[cType] + (cBot ? BOT : 0))} грн). Мій бізнес: `;
   }
 };
