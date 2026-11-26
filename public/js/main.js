@@ -441,21 +441,3 @@ else Promise.race([document.fonts.ready.then(() => 'ok'), wait(1000).then(() => 
   addEventListener('resize', draw);
   draw();
 })();
-
-/* ================= РОБОТИ: скрін сайту гортається до кінця (десктоп — при наведенні, мобілка — коли картка видима) ================= */
-(() => {
-  const WIN = 10/16;                                   // висота вікна картки відносно ширини
-  document.querySelectorAll('.shot .win img').forEach(img => {
-    const set = () => {
-      const r = img.naturalHeight / img.naturalWidth;
-      if(!r || r <= WIN) return;
-      img.style.setProperty('--s', (-(1 - WIN / r) * 100).toFixed(2) + '%');
-      img.style.setProperty('--d', Math.min(20, Math.max(5, (r - WIN) / WIN * 1.1)).toFixed(1) + 's');  // ~1,1 с на екран
-    };
-    img.complete ? set() : img.addEventListener('load', set);
-  });
-  if(!matchMedia('(hover:hover) and (pointer:fine)').matches && !reduce){
-    const io = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('run', e.intersectionRatio > .6)), {threshold:[0,.6,1]});
-    document.querySelectorAll('.shot').forEach(s => io.observe(s));
-  }
-})();
