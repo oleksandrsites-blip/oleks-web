@@ -112,33 +112,48 @@ main>section,.ftr{transition:opacity .6s}
 .shot .bar{display:flex;align-items:center;gap:6px;height:34px;padding:0 14px;border-bottom:1px solid var(--line);background:var(--surface)}
 .shot .bar i{width:9px;height:9px;border-radius:50%;background:#2A2F37}
 .shot .bar em{margin-left:10px;font-style:normal;font-family:var(--f-mono);font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.shot img{width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;object-position:top;transition:transform .8s var(--out)}
-.shot:hover img{transform:scale(1.025)}
+.shot .win{display:block;aspect-ratio:16/10;overflow:hidden}
+.shot .win img{display:block;width:100%;height:auto;transition:transform 1.2s var(--out)}
+/* при наведенні скрін гортається вниз на всю довжину сайту */
+@media (hover:hover){
+  .shot:hover .win img{transform:translateY(-80%);transition:transform 7s cubic-bezier(.45,.05,.4,1)}
+  .shot .bar::after{content:"наведіть ↓";margin-left:auto;font-family:var(--f-mono);font-size:12px;color:var(--dim);transition:opacity .3s}
+  .shot:hover .bar::after{opacity:0}
+}
 .shot .ph{display:grid;place-items:center;aspect-ratio:16/10;background:#F3EEE8;color:#102662;font-family:var(--f-mono);font-size:14px;text-align:center;padding:16px}
 
 /* ================= роботи ================= */
 .work{padding-top:22vh;padding-bottom:12vh;position:relative}
 .work .h2{max-width:15ch}
-.feat{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:48px 32px;margin-top:12vh;align-items:start}
-.feat-shot{grid-column:1/9}
-.feat-info{grid-column:9/13;padding-top:8px}
-.feat-info .h3{font-size:clamp(24px,2.4vw,36px)}
-
-.review{margin-top:40px;padding-top:28px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:20px}
 .note-vid{position:relative;width:148px;height:148px;border-radius:50%;overflow:hidden;flex:none;
   box-shadow:0 0 0 2px var(--bg),0 0 0 3px rgba(198,244,50,.6)}
 .note-vid video{width:100%;height:100%;object-fit:cover;transform:scale(1.04)}
 .snd{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);padding:5px 10px;border-radius:999px;background:rgba(11,13,16,.75);
   font-size:13px;font-weight:500;white-space:nowrap;backdrop-filter:blur(6px);transition:opacity .25s}
 .note-vid.playing .snd{opacity:0}
-.review blockquote p{font-size:18px;line-height:1.55;color:var(--text)}
-.review figcaption{margin-top:10px;font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+/* ВІДГУКИ */
+.reviews{padding-top:14vh;padding-bottom:4vh}
+.rv-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;margin-top:56px}
+.rv{display:flex;flex-direction:column;align-items:flex-start;gap:28px;padding:36px;border:1px solid var(--line);border-radius:24px;background:var(--surface)}
+.rv-ava{display:block;width:148px;height:148px;border-radius:50%;overflow:hidden;flex:none;box-shadow:0 0 0 2px var(--bg),0 0 0 3px rgba(198,244,50,.6)}
+.rv-ava img{width:100%;height:100%;object-fit:cover}
+.rv blockquote{flex:1}
+.rv blockquote p{font-size:clamp(18px,1.5vw,21px);line-height:1.55;color:var(--text)}
+.rv figcaption{align-self:stretch;display:grid;grid-template-columns:1fr auto;align-items:center;gap:4px 16px;padding-top:22px;border-top:1px solid var(--line)}
+.rv figcaption b{font-family:var(--f-head);font-weight:800;font-size:17px;letter-spacing:-.01em}
+.rv figcaption span{font-size:15px;color:var(--muted)}
+.rv figcaption b{grid-column:1}
+.rv figcaption span{grid-column:1}
+.rv figcaption .go{grid-column:2;grid-row:1/3;margin:0}
 
-.bento{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px;margin-top:14vh;padding-top:56px;border-top:1px solid var(--line)}
+.bento{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:80px 32px;margin-top:10vh}
 .case{display:flex;flex-direction:column}
+.case .shot{margin-bottom:24px}
+.case-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px 16px;flex-wrap:wrap}
+.case-head .h3{font-size:clamp(22px,2vw,30px)}
+.tag{font-family:var(--f-mono);font-size:13px;color:var(--muted)}
 .case .desc{flex:1}
 .case .go{align-self:flex-start}
-.case .shot{margin-bottom:22px}
 .dots{display:none}
 
 /* ================= як працюю ================= */
@@ -299,10 +314,8 @@ main>section,.ftr{transition:opacity .6s}
 
 /* ================= mobile ================= */
 @media (max-width:900px){
-  .feat-shot,.feat-info{grid-column:1/-1}
-  .feat{gap:28px}
-  .review{flex-direction:row;align-items:center}
-  .bento{grid-template-columns:1fr;gap:64px;margin-top:10vh;padding-top:40px}
+  .bento{gap:56px 24px}
+  .rv{padding:28px}
   .calc{grid-template-columns:1fr;margin-top:40px}
   .faq{grid-template-columns:1fr;gap:32px}
   .faq-head{display:contents}
@@ -329,7 +342,6 @@ main>section,.ftr{transition:opacity .6s}
   .hfacts{flex-direction:column;gap:10px;font-size:15px}
   .h2{font-size:28px}
   .work{padding-top:16vh}
-  .feat{margin-top:8vh}
   .shot{border-radius:14px}
   .shot .bar{height:28px}
   .lead{font-size:17px}
@@ -339,18 +351,23 @@ main>section,.ftr{transition:opacity .6s}
   .hero{min-height:auto;justify-content:flex-start;padding-top:132px;padding-bottom:56px}
   .h1{line-height:1.08}
   /* --- роботи: відгук компактніше --- */
-  .review{flex-direction:row;align-items:flex-start;gap:16px}
-  .note-vid{width:96px;height:96px}
+  .rv-grid{grid-template-columns:1fr;gap:16px;margin-top:32px}
+  .rv{padding:22px;gap:18px;border-radius:20px}
+  .note-vid,.rv-ava{width:96px;height:96px}
   .snd{font-size:0;bottom:8px;padding:5px 8px}
   .snd::before{content:"🔊";font-size:14px}
-  .review blockquote p{font-size:16px}
+  .rv blockquote p{font-size:17px}
+  .rv figcaption{padding-top:16px}
+  .rv figcaption{grid-template-columns:1fr}
+  .rv figcaption .go{grid-column:1;grid-row:auto;justify-self:start;margin-top:8px}
+  .reviews{padding-top:10vh}
   /* --- роботи: свайп-карусель --- */
   .bento{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;
     margin:56px calc(var(--pad)*-1) 0;padding:0 var(--pad);scroll-padding-left:var(--pad);border-top:0}
   .bento::-webkit-scrollbar{display:none}
   .case{flex:0 0 84%;scroll-snap-align:start}
   .case .shot{margin-bottom:16px}
-  .case .h3{font-size:20px}
+  .case-head .h3{font-size:20px}
   .case .desc{font-size:16px;margin-top:8px}
   .dots{display:flex;justify-content:center;gap:8px;margin-top:24px}
   .dots i{width:8px;height:8px;border-radius:999px;background:var(--line);transition:width .3s var(--ease),background .3s}
