@@ -441,3 +441,24 @@ else Promise.race([document.fonts.ready.then(() => 'ok'), wait(1000).then(() => 
   addEventListener('resize', draw);
   draw();
 })();
+
+/* ================= РОБОТИ: записи скролу (десктоп — при наведенні, мобілка — коли картка на екрані) ================= */
+(() => {
+  const vids = [...document.querySelectorAll('.shot video[data-src]')];
+  const hover = matchMedia('(hover:hover) and (pointer:fine)').matches;
+  const load = v => { if(v.dataset.src){ v.src = v.dataset.src; v.removeAttribute('data-src'); v.preload = 'auto'; } };
+  const play = v => { load(v); v.play().catch(()=>{}); };
+  // підвантажуємо відео, коли картка вже близько
+  const near = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting){ load(e.target); near.unobserve(e.target); } }), {rootMargin:'400px'});
+  vids.forEach(v => near.observe(v));
+  if(hover){
+    vids.forEach(v => {
+      const shot = v.closest('.shot');
+      shot.addEventListener('mouseenter', () => play(v));
+      shot.addEventListener('mouseleave', () => { v.pause(); });
+    });
+  } else if(!reduce){
+    const vis = new IntersectionObserver(es => es.forEach(e => { e.intersectionRatio > .6 ? play(e.target) : e.target.pause(); }), {threshold:[0,.6,1]});
+    vids.forEach(v => vis.observe(v));
+  }
+})();
