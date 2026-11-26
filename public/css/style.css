@@ -141,14 +141,32 @@ main>section,.ftr{transition:opacity .6s}
 .rv figcaption span{grid-column:1}
 .rv figcaption .go{grid-column:2;grid-row:1/3;margin:0}
 
-.bento{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:80px 32px;margin-top:10vh}
-.case{display:flex;flex-direction:column}
-.case .shot{margin-bottom:24px}
-.case-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px 16px;flex-wrap:wrap}
-.case-head .h3{font-size:clamp(22px,2vw,30px)}
+/* роботи: список зліва + велике прев'ю справа */
+.wl{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:64px;align-items:center;margin-top:10vh}
+.bento{border-top:1px solid var(--line)}
+.wi .shot,.wi .desc,.wi .go{display:none}
+.wi-head{position:relative;display:flex;align-items:baseline;justify-content:space-between;gap:6px 16px;flex-wrap:wrap;width:100%;padding:26px 0;
+  border-bottom:1px solid var(--line);text-align:left;color:var(--muted);cursor:pointer;transition:color .3s,padding .5s var(--out)}
+.wi-name{font-size:clamp(22px,2.1vw,32px);color:inherit}
 .tag{font-family:var(--f-mono);font-size:13px;color:var(--muted)}
-.case .desc{flex:1}
-.case .go{align-self:flex-start}
+.wi-head .tag{transition:color .3s}
+.wi-head:hover{color:var(--text2)}
+.wi.on .wi-head{color:var(--text);padding-left:30px}
+.wi.on .wi-head .tag{color:var(--text2)}
+.wi-head::before{content:"";position:absolute;left:2px;top:50%;width:12px;height:12px;margin-top:-6px;border-radius:50%;background:var(--lime);transform:scale(0);transition:transform .45s var(--out)}
+.wi.on .wi-head::before{transform:scale(1)}
+.wi-bar{position:absolute;left:0;right:0;bottom:-1px;height:1px;background:var(--lime);transform:scaleX(0);transform-origin:left}
+.wl.auto .wi.on .wi-bar{animation:wbar 4.5s linear both}
+@keyframes wbar{to{transform:scaleX(1)}}
+.wprev .win{position:relative}
+.wprev .win .wp-img{position:absolute;inset:0;clip-path:inset(0 0 100% 0);transform:scale(1.06);transition:clip-path .75s cubic-bezier(.7,0,.2,1),transform 1.2s var(--out)}
+.wprev .win .wp-img.on{clip-path:inset(0);transform:none;z-index:2}
+.wprev .win .wp-img.was{clip-path:inset(0);transform:none;z-index:1;transition:none}
+.wprev .shot:hover .wp-img.on{transform:scale(1.02)}
+.wp-info{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;margin-top:22px;min-height:3.4em}
+.wp-info .desc{margin-top:0;transition:opacity .25s}
+.wp-info .go{margin-top:2px;white-space:nowrap;transition:opacity .25s,color .2s,border-color .2s}
+.wp-info.swap .desc,.wp-info.swap .go{opacity:0}
 .dots{display:none}
 
 /* ================= як працюю ================= */
@@ -309,7 +327,7 @@ main>section,.ftr{transition:opacity .6s}
 
 /* ================= mobile ================= */
 @media (max-width:900px){
-  .bento{gap:56px 24px}
+  .wl{gap:32px}
   .rv{padding:28px}
   .calc{grid-template-columns:1fr;margin-top:40px}
   .faq{grid-template-columns:1fr;gap:32px}
@@ -362,7 +380,15 @@ main>section,.ftr{transition:opacity .6s}
   .bento::-webkit-scrollbar{display:none}
   .case{flex:0 0 84%;scroll-snap-align:start}
   .case .shot{margin-bottom:16px}
-  .case-head .h3{font-size:20px}
+  .wl{display:block;margin-top:0}
+  .wprev{display:none}
+  .wi .shot,.wi .desc{display:block}
+  .wi .go{display:inline-block}
+  .wi-head{padding:0;border:0;color:var(--text);pointer-events:none}
+  .wi-head::before,.wi-bar{display:none}
+  .wi.on .wi-head{padding-left:0}
+  .wi-name{font-size:20px}
+  .wi-head .tag{flex-basis:100%;margin-top:4px}
   .case .desc{font-size:16px;margin-top:8px}
   .dots{display:flex;justify-content:center;gap:8px;margin-top:24px}
   .dots i{width:8px;height:8px;border-radius:999px;background:var(--line);transition:width .3s var(--ease),background .3s}

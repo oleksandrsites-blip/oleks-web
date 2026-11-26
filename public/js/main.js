@@ -132,7 +132,7 @@ function layoutThread(){
   svg.setAttribute('width', doc.clientWidth);
   svg.setAttribute('height', doc.scrollHeight);
 
-  const c = abs(cur), k1 = abs($('kw1')), f = abs($('featShot')), k2 = abs($('kw2'));
+  const c = abs(cur), k1 = abs($('kw1')), f = abs(isMob() ? document.querySelector('.wi .shot') : $('featShot')), k2 = abs($('kw2'));
   const pad = parseFloat(getComputedStyle(doc).getPropertyValue('--pad')) || 48;
   const g = Math.max(6, pad/2);                       // «жолоб» біля лівого краю
   const R = isMob() ? 14 : 18;
@@ -441,3 +441,39 @@ else Promise.race([document.fonts.ready.then(() => 'ok'), wait(1000).then(() => 
   addEventListener('resize', draw);
   draw();
 })();
+
+/* ================= РОБОТИ: список + прев'ю (десктоп) ================= */
+(() => {
+  const wl = document.querySelector('.wl'), wis = [...document.querySelectorAll('.wi')], imgs = [...document.querySelectorAll('.wp-img')];
+  const shot = $('featShot'), host = $('wpHost'), desc = $('wpDesc'), go = $('wpGo'), info = document.querySelector('.wp-info');
+  let cur = 0, timer = 0, swapT = 0, wasT = 0;
+  function show(i){
+    if(i === cur) return;
+    clearTimeout(wasT);
+    imgs.forEach(x => x.classList.remove('was'));
+    imgs[cur].classList.replace('on', 'was');
+    imgs[i].classList.add('on');
+    wasT = setTimeout(() => imgs.forEach(x => x.classList.remove('was')), 900);
+    wis[cur].classList.remove('on'); wis[i].classList.add('on');
+    const w = wis[i];
+    shot.href = go.href = w.dataset.url;
+    host.textContent = w.dataset.host;
+    info.classList.add('swap'); clearTimeout(swapT);
+    swapT = setTimeout(() => { desc.textContent = w.querySelector('.desc').textContent; go.textContent = w.dataset.host + ' ↗'; info.classList.remove('swap'); }, 220);
+    cur = i;
+  }
+  const stop = () => { clearInterval(timer); timer = -1; wl.classList.remove('auto'); };
+  wis.forEach((w, i) => {
+    const h = w.querySelector('.wi-head');
+    h.addEventListener('mouseenter', () => { if(!isMob()){ stop(); show(i); } });
+    h.addEventListener('click', () => { if(!isMob()){ stop(); show(i); } });
+    h.addEventListener('focus', () => { if(!isMob()){ stop(); show(i); } });
+  });
+  // поки користувач не взаємодіяв — роботи самі перемикаються, коли блок на екрані
+  if(!reduce) new IntersectionObserver(([e]) => {
+    if(timer === -1 || isMob()) return;
+    if(e.isIntersecting && !timer){ wl.classList.add('auto'); timer = setInterval(() => show((cur + 1) % wis.length), 4500); }
+    else if(!e.isIntersecting && timer){ clearInterval(timer); timer = 0; wl.classList.remove('auto'); }
+  }, {threshold:.45}).observe(wl);
+})()
+;
