@@ -444,9 +444,9 @@ else Promise.race([document.fonts.ready.then(() => 'ok'), wait(1000).then(() => 
 
 /* ================= РОБОТИ: список + прев'ю (десктоп) ================= */
 (() => {
-  const wl = document.querySelector('.wl'), wis = [...document.querySelectorAll('.wi')], imgs = [...document.querySelectorAll('.wp-img')];
+  const wis = [...document.querySelectorAll('.wi')], imgs = [...document.querySelectorAll('.wp-img')];
   const shot = $('featShot'), host = $('wpHost'), desc = $('wpDesc'), go = $('wpGo'), info = document.querySelector('.wp-info');
-  let cur = 0, timer = 0, swapT = 0, wasT = 0;
+  let cur = 0, swapT = 0, wasT = 0;
   function show(i){
     if(i === cur) return;
     clearTimeout(wasT);
@@ -462,18 +462,6 @@ else Promise.race([document.fonts.ready.then(() => 'ok'), wait(1000).then(() => 
     swapT = setTimeout(() => { desc.textContent = w.querySelector('.desc').textContent; go.textContent = w.dataset.host + ' ↗'; info.classList.remove('swap'); }, 220);
     cur = i;
   }
-  const stop = () => { clearInterval(timer); timer = -1; wl.classList.remove('auto'); };
-  wis.forEach((w, i) => {
-    const h = w.querySelector('.wi-head');
-    h.addEventListener('mouseenter', () => { if(!isMob()){ stop(); show(i); } });
-    h.addEventListener('click', () => { if(!isMob()){ stop(); show(i); } });
-    h.addEventListener('focus', () => { if(!isMob()){ stop(); show(i); } });
-  });
-  // поки користувач не взаємодіяв — роботи самі перемикаються, коли блок на екрані
-  if(!reduce) new IntersectionObserver(([e]) => {
-    if(timer === -1 || isMob()) return;
-    if(e.isIntersecting && !timer){ wl.classList.add('auto'); timer = setInterval(() => show((cur + 1) % wis.length), 4500); }
-    else if(!e.isIntersecting && timer){ clearInterval(timer); timer = 0; wl.classList.remove('auto'); }
-  }, {threshold:.45}).observe(wl);
+  wis.forEach((w, i) => w.querySelector('.wi-head').addEventListener('click', () => { if(!isMob()) show(i); }));
 })()
 ;

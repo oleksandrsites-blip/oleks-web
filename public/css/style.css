@@ -155,9 +155,6 @@ main>section,.ftr{transition:opacity .6s}
 .wi.on .wi-head .tag{color:var(--text2)}
 .wi-head::before{content:"";position:absolute;left:2px;top:50%;width:12px;height:12px;margin-top:-6px;border-radius:50%;background:var(--lime);transform:scale(0);transition:transform .45s var(--out)}
 .wi.on .wi-head::before{transform:scale(1)}
-.wi-bar{position:absolute;left:0;right:0;bottom:-1px;height:1px;background:var(--lime);transform:scaleX(0);transform-origin:left}
-.wl.auto .wi.on .wi-bar{animation:wbar 4.5s linear both}
-@keyframes wbar{to{transform:scaleX(1)}}
 .wprev .win{position:relative}
 .wprev .win .wp-img{position:absolute;inset:0;clip-path:inset(0 0 100% 0);transform:scale(1.06);transition:clip-path .75s cubic-bezier(.7,0,.2,1),transform 1.2s var(--out)}
 .wprev .win .wp-img.on{clip-path:inset(0);transform:none;z-index:2}
@@ -385,7 +382,7 @@ main>section,.ftr{transition:opacity .6s}
   .wi .shot,.wi .desc{display:block}
   .wi .go{display:inline-block}
   .wi-head{padding:0;border:0;color:var(--text);pointer-events:none}
-  .wi-head::before,.wi-bar{display:none}
+  .wi-head::before{display:none}
   .wi.on .wi-head{padding-left:0}
   .wi-name{font-size:20px}
   .wi-head .tag{flex-basis:100%;margin-top:4px}
