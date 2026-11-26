@@ -112,11 +112,13 @@ main>section,.ftr{transition:opacity .6s}
 .shot .bar{display:flex;align-items:center;gap:6px;height:34px;padding:0 14px;border-bottom:1px solid var(--line);background:var(--surface)}
 .shot .bar i{width:9px;height:9px;border-radius:50%;background:#2A2F37}
 .shot .bar em{margin-left:10px;font-style:normal;font-family:var(--f-mono);font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.shot .win{display:block;aspect-ratio:20/11;overflow:hidden;background:var(--surface2)}
-.shot .win video{display:block;width:100%;height:100%;object-fit:cover}
-/* десктоп: запис скролу грає при наведенні */
+.shot .win{display:block;aspect-ratio:16/10;overflow:hidden;background:var(--surface2)}
+.shot .win img{display:block;width:100%;height:auto;transform:translateY(0);transition:transform 1.4s var(--out)}
+/* скрін гортається до самого низу: десктоп — при наведенні, мобілка — коли картка на екрані (.run) */
+.shot.run .win img{transform:translateY(var(--s,0));transition:transform var(--d,8s) cubic-bezier(.4,.05,.5,.95)}
 @media (hover:hover){
-  .shot .bar::after{content:"наведіть ▶";margin-left:auto;font-family:var(--f-mono);font-size:12px;color:var(--dim);transition:opacity .3s}
+  .shot:hover .win img{transform:translateY(var(--s,0));transition:transform var(--d,8s) cubic-bezier(.4,.05,.5,.95)}
+  .shot .bar::after{content:"наведіть ↓";margin-left:auto;font-family:var(--f-mono);font-size:12px;color:var(--dim);transition:opacity .3s}
   .shot:hover .bar::after{opacity:0}
 }
 .shot .ph{display:grid;place-items:center;aspect-ratio:16/10;background:#F3EEE8;color:#102662;font-family:var(--f-mono);font-size:14px;text-align:center;padding:16px}

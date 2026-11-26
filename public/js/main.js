@@ -442,23 +442,20 @@ else Promise.race([document.fonts.ready.then(() => 'ok'), wait(1000).then(() => 
   draw();
 })();
 
-/* ================= РОБОТИ: записи скролу (десктоп — при наведенні, мобілка — коли картка на екрані) ================= */
+/* ================= РОБОТИ: скрін сайту гортається до кінця (десктоп — при наведенні, мобілка — коли картка видима) ================= */
 (() => {
-  const vids = [...document.querySelectorAll('.shot video[data-src]')];
-  const hover = matchMedia('(hover:hover) and (pointer:fine)').matches;
-  const load = v => { if(v.dataset.src){ v.src = v.dataset.src; v.removeAttribute('data-src'); v.preload = 'auto'; } };
-  const play = v => { load(v); v.play().catch(()=>{}); };
-  // підвантажуємо відео, коли картка вже близько
-  const near = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting){ load(e.target); near.unobserve(e.target); } }), {rootMargin:'400px'});
-  vids.forEach(v => near.observe(v));
-  if(hover){
-    vids.forEach(v => {
-      const shot = v.closest('.shot');
-      shot.addEventListener('mouseenter', () => play(v));
-      shot.addEventListener('mouseleave', () => { v.pause(); });
-    });
-  } else if(!reduce){
-    const vis = new IntersectionObserver(es => es.forEach(e => { e.intersectionRatio > .6 ? play(e.target) : e.target.pause(); }), {threshold:[0,.6,1]});
-    vids.forEach(v => vis.observe(v));
+  const WIN = 10/16;                                   // висота вікна картки відносно ширини
+  document.querySelectorAll('.shot .win img').forEach(img => {
+    const set = () => {
+      const r = img.naturalHeight / img.naturalWidth;
+      if(!r || r <= WIN) return;
+      img.style.setProperty('--s', (-(1 - WIN / r) * 100).toFixed(2) + '%');
+      img.style.setProperty('--d', Math.min(20, Math.max(5, (r - WIN) / WIN * 1.1)).toFixed(1) + 's');  // ~1,1 с на екран
+    };
+    img.complete ? set() : img.addEventListener('load', set);
+  });
+  if(!matchMedia('(hover:hover) and (pointer:fine)').matches && !reduce){
+    const io = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('run', e.intersectionRatio > .6)), {threshold:[0,.6,1]});
+    document.querySelectorAll('.shot').forEach(s => io.observe(s));
   }
 })();
