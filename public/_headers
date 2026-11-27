@@ -1,0 +1,23 @@
+# Кеш у браузері. Шрифти мають хеш у назві — кешуємо назавжди.
+/assets/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Картинки й відео: 30 днів (якщо замінюємо файл — даємо нову назву або чекаємо оновлення).
+/assets/img/*
+  Cache-Control: public, max-age=2592000
+/assets/video/*
+  Cache-Control: public, max-age=2592000
+/og.jpg
+  Cache-Control: public, max-age=604800
+
+# CSS/JS підключені з ?v=… — при зміні версії браузер бере новий файл.
+/css/*
+  Cache-Control: public, max-age=604800
+/js/*
+  Cache-Control: public, max-age=604800
+
+# Базовий захист (рекомендації PageSpeed)
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: SAMEORIGIN

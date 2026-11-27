@@ -178,3 +178,4 @@ o_ oleks_web · Telegram · Instagram (instagram.com/oleks_web) · oleksandr.sit
 - **JSON-LD:** WebSite, ProfessionalService (послуги з цінами від, зона — Україна, Instagram і Telegram), WebPage, FAQPage (6 питань із сайту).
 - **robots.txt** (закрито /api/), **sitemap.xml**, canonical → https://oleksweb.com/
 - www і oleks-web.pages.dev → 301 на oleksweb.com (functions/_middleware.js).
+- **Швидкість:** шрифти на власному домені (public/assets/fonts, кирилиця+латиниця, preload для Unbounded і Onest), скріни кейсів 800px для телефонів (srcset), відео-відгук вантажиться лише біля блоку, кеш і базові заголовки безпеки — public/_headers.
