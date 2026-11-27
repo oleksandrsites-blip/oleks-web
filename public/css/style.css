@@ -170,6 +170,12 @@ main>section,.ftr{transition:opacity .6s}
 .process{padding-top:14vh;padding-bottom:14vh}
 .process .h2{font-size:clamp(26px,3.4vw,52px);max-width:16ch}
 /* 4 етапи: рівний ряд карток, поява по черзі при вході в екран */
+.flow-cta{display:flex;align-items:center;justify-content:space-between;gap:24px 48px;margin-top:40px;padding-top:32px;border-top:1px solid var(--line)}
+.flow-cta p{max-width:52ch;font-size:17px;line-height:1.55;color:var(--text2)}
+.flow-cta .btn-line{flex:none;width:auto;margin:0;padding:0 34px;color:var(--lime)}
+.c-help{margin-top:14px;font-size:16px;line-height:1.5;color:var(--muted)}
+.c-help a{color:var(--text);border-bottom:1px solid rgba(198,244,50,.5);transition:color .2s,border-color .2s}
+.c-help a:hover{color:var(--lime);border-color:var(--lime)}
 .flow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;margin-top:56px;list-style:none}
 .fs{position:relative;display:flex;flex-direction:column;padding:28px 28px 32px;border:1px solid var(--line);border-radius:22px;background:var(--surface);
   opacity:0;transform:translateY(20px);transition:opacity .6s var(--out),transform .7s var(--out),border-color .25s}
@@ -418,6 +424,10 @@ main>section,.ftr{transition:opacity .6s}
   .opt .o-d,.tog .o-d{display:none}
   .opt b,.tog b{font-family:var(--f-body);font-weight:600;font-size:16px;letter-spacing:0}
   .calc-opts .c-label:not(:first-child){margin-top:22px}
+  .c-help{font-size:15px}
+  .flow-cta{flex-direction:column;align-items:stretch;gap:18px;margin-top:28px;padding-top:24px}
+  .flow-cta p{font-size:16px}
+  .flow-cta .btn-line{width:100%}
   .adds{gap:10px}
   .tog{padding:14px;border-radius:16px}
   .tog b{padding-right:28px}
