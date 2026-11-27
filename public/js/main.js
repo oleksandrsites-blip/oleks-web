@@ -17,7 +17,7 @@ const sleep = ms => skipped ? Promise.resolve() : wait(ms);
 const ZW = '​';
 
 function buildH1(full){
-  h1.innerHTML = ''; segs = [];
+  [...h1.children].forEach(c => { if(!c.classList.contains('vh')) c.remove(); }); segs = [];
   LINES().forEach(line => {
     const l = document.createElement('span'); l.className = 'line';
     line.forEach(s => {
@@ -28,7 +28,7 @@ function buildH1(full){
     });
     h1.appendChild(l);
   });
-  if(full) segs[segs.length-1].after(cur);
+  if(full){ segs[segs.length-1].after(cur); h1.querySelector('.vh')?.remove(); }   // текст уже видимий — прихований дубль не потрібен
 }
 
 function showRest(){

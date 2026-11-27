@@ -167,3 +167,14 @@ o_ oleks_web · Telegram · Instagram (instagram.com/oleks_web) · oleksandr.sit
 
 - **title:** oleks_web — сайти для бізнесу під ключ
 - **description:** Лендинги та сайти для бізнесу, які приводять заявки одразу у ваш Telegram. Безкоштовний прототип першого екрана до оплати.
+
+---
+
+## SEO (з 27.11.2026, домен oleksweb.com)
+
+- **title:** Розробка сайтів для бізнесу під ключ — oleks_web
+- **description:** Розробка лендингів і сайтів для бізнесу під ключ: дизайн з нуля, заявки одразу у ваш Telegram. Безкоштовний прототип першого екрана до оплати.
+- **H1** у HTML містить слоган (прихований текст до завершення інтро, потім прибирається), щоб пошуковик бачив заголовок без анімації.
+- **JSON-LD:** WebSite, ProfessionalService (послуги з цінами від, зона — Україна, Instagram і Telegram), WebPage, FAQPage (6 питань із сайту).
+- **robots.txt** (закрито /api/), **sitemap.xml**, canonical → https://oleksweb.com/
+- www і oleks-web.pages.dev → 301 на oleksweb.com (functions/_middleware.js).
