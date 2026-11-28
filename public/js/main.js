@@ -2,6 +2,7 @@
 const $ = id => document.getElementById(id);
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const isMob = () => innerWidth <= 700;
+const ARR = '<svg class="arr" viewBox="0 0 12 12" aria-hidden="true"><path d="M3.5 8.5 8.5 3.5M4.5 3.5h4v4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';   // стрілка ↗ як SVG (на iPhone символ ↗ малюється емодзі)
 const wait = ms => new Promise(r => setTimeout(r, ms));
 
 /* ================= HERO: сайт збирається на своєму місці ================= */
@@ -448,20 +449,27 @@ else Promise.race([document.fonts.ready.then(() => 'ok'), wait(1000).then(() => 
 (() => {
   const wis = [...document.querySelectorAll('.wi')], imgs = [...document.querySelectorAll('.wp-img')];
   const shot = $('featShot'), host = $('wpHost'), desc = $('wpDesc'), go = $('wpGo'), info = document.querySelector('.wp-info');
-  let cur = 0, swapT = 0, wasT = 0;
-  function show(i){
+  let cur = 0, swapT = 0, wasT = 0, want = 0;
+  // скріни прев'ю підвантажуємо, коли блок робіт уже близько, щоб перемикання було миттєвим
+  const loadAll = () => imgs.forEach(im => { if(im.dataset.src){ im.srcset = im.dataset.srcset; im.src = im.dataset.src; delete im.dataset.src; } });
+  new IntersectionObserver(([e], o) => { if(e.isIntersecting){ loadAll(); o.disconnect(); } }, {rootMargin:'800px'}).observe(shot);
+  const ready = im => im.complete && im.naturalWidth ? Promise.resolve() : (im.decode ? im.decode().catch(()=>{}) : new Promise(r => im.onload = r));
+  async function show(i){
+    want = i; loadAll();
+    wis.forEach((w, k) => w.classList.toggle('on', k === i));   // назва реагує одразу
     if(i === cur) return;
+    await ready(imgs[i]);
+    if(want !== i) return;                                       // поки вантажилось, клікнули іншу
     clearTimeout(wasT);
     imgs.forEach(x => x.classList.remove('was'));
     imgs[cur].classList.replace('on', 'was');
     imgs[i].classList.add('on');
-    wasT = setTimeout(() => imgs.forEach(x => x.classList.remove('was')), 900);
-    wis[cur].classList.remove('on'); wis[i].classList.add('on');
+    wasT = setTimeout(() => imgs.forEach(x => x.classList.remove('was')), 1000);
     const w = wis[i];
     shot.href = go.href = w.dataset.url;
     host.textContent = w.dataset.host;
     info.classList.add('swap'); clearTimeout(swapT);
-    swapT = setTimeout(() => { desc.textContent = w.querySelector('.desc').textContent; go.textContent = w.dataset.host + ' ↗'; info.classList.remove('swap'); }, 220);
+    swapT = setTimeout(() => { desc.textContent = w.querySelector('.desc').textContent; go.innerHTML = w.dataset.host + ' ' + ARR; info.classList.remove('swap'); }, 220);
     cur = i;
   }
   wis.forEach((w, i) => w.querySelector('.wi-head').addEventListener('click', () => { if(!isMob()) show(i); }));
